@@ -1,3 +1,7 @@
+### Custom ###
+# Entire JetBrains folder
+.idea/
+
 # Created by https://www.toptal.com/developers/gitignore/api/macos,vim,jetbrains
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,vim,jetbrains
 
