@@ -5,6 +5,7 @@ import (
 	"gophercises/urlshortener/handler"
 	"log"
 	"net/http"
+	"os"
 )
 
 func UrlShortener() error {
@@ -25,13 +26,26 @@ func UrlShortener() error {
 	}
 
 	// Build the YAMLHandler using the mapHandler as the fallback
-	yaml := `
-- path: /urlshort
-  url: https://github.com/gophercises/urlshort
-- path: /urlshort-final
-  url: https://github.com/gophercises/urlshort/tree/solution
-`
-	yamlHandler, err := handler.YAMLHandler([]byte(yaml), mapHandler)
+	// Use raw string as yaml input
+	/*
+			yaml := `
+		- path: /net/http
+		  url: https://pkg.go.dev/net/http
+		- path: /strings
+		  url: https://pkg.go.dev/strings
+		`
+			yamlHandler, err := handler.YAMLHandler(strings.NewReader(yaml), mapHandler)
+			if err != nil {
+				return err
+			}
+	*/
+	// Or, use file as yaml input
+	yaml, err := os.Open(".data/mappings.yaml")
+	if err != nil {
+		return err
+	}
+
+	yamlHandler, err := handler.YAMLHandler(yaml, mapHandler)
 	if err != nil {
 		return err
 	}
