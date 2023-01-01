@@ -2,7 +2,6 @@ package main
 
 import (
 	"gophercises/urlshortener/handler"
-	"log"
 	"net/http"
 )
 
@@ -16,7 +15,7 @@ func DemoHandler() http.HandlerFunc {
 	}
 }
 
-func main() {
+func HandlerDemo() error {
 	pathsToUrls := map[string]string{
 		"/google": "https://google.com/",
 		"/go":     "https://go.dev",
@@ -24,10 +23,12 @@ func main() {
 
 	mapHandler, err := handler.MapHandler(pathsToUrls, http.NotFoundHandler())
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if err := http.ListenAndServe(":8080", mapHandler); err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
