@@ -5,6 +5,15 @@ The projects are properly designed from easy to hard, covering various Go concep
 
 I am following this course to improve my coding skills using Go. By far, I think it is a good start for me.
 
+## Projects
+
+Here lists projects I have followed and completed in this course (in chronological order):
+
+- [**quiz-game**](quiz-game): [project description](https://github.com/gophercises/quiz)
+- [**url-shortener**](url-shortener): [project description](https://github.com/gophercises/urlshort)
+
+## Libraries
+
 There are many important standard libraries and packages used within these projects, including:
 
 - [encoding/csv](https://pkg.go.dev/encoding/csv)
