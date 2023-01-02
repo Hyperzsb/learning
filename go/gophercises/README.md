@@ -11,14 +11,17 @@ Here lists projects I have followed and completed in this course (in chronologic
 
 - [**quiz-game**](quiz-game): [project description](https://github.com/gophercises/quiz)
 - [**url-shortener**](url-shortener): [project description](https://github.com/gophercises/urlshort)
+- [**choose-your-own-adventure**](choose-your-own-adventure): [project description](https://github.com/gophercises/cyoa)
 
 ## Libraries
 
 There are many important standard libraries and packages used within these projects, including:
 
 - [encoding/csv](https://pkg.go.dev/encoding/csv)
+- [encoding/json](https://pkg.go.dev/encoding/json)
 - [flag](https://pkg.go.dev/flag)
 - [fmt](https://pkg.go.dev/fmt)
+- [html/template](https://pkg.go.dev/html/template)
 - [io](https://pkg.go.dev/io)
 - [log](https://pkg.go.dev/log)
 - [net/http](https://pkg.go.dev/net/http)
