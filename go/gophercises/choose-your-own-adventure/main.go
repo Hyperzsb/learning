@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"gophercises/cyoa/demo"
+	"log"
+)
 
 type Section struct {
 	Title   string   `json:"title"`
@@ -14,7 +17,7 @@ type Option struct {
 }
 
 func main() {
-	if err := HandlerDemo(); err != nil {
+	if err := demo.JSONDemo(); err != nil {
 		log.Fatal(err)
 	}
 }
