@@ -14,7 +14,7 @@ type Option struct {
 }
 
 func main() {
-	if err := HTMLDemo(); err != nil {
+	if err := HandlerDemo(); err != nil {
 		log.Fatal(err)
 	}
 }
