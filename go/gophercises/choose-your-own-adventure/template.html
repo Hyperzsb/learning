@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h1>{{.Title}}</h1>
+    {{range .Paragraphs}}
+    <p>{{.}}</p>
+    {{end}}
+    {{if .Options}}
+        <h2>Options</h2>
+        {{range .Options}}
+        <p><a href="/{{.Arc}}">{{.Text}}</a></p>
+        {{end}}
+    {{else}}
+        <h2><a href="/">Start Over!</a></h2>
+    {{end}}
+</body>
+</html>

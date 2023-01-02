@@ -1,23 +1,41 @@
 package main
 
 import (
-	"gophercises/cyoa/demo"
 	"log"
+	"net/http"
 )
 
-type Section struct {
-	Title   string   `json:"title"`
-	Story   []string `json:"story"`
-	Options []Option `json:"options"`
-}
+func Serve() error {
+	const (
+		storyJSONFilename     string = ".data/story.json"
+		storyTemplateFilename string = "template.html"
+		servePort             string = ":8080"
+	)
+	storyContent, err := NewStory(storyJSONFilename)
+	if err != nil {
+		return err
+	}
 
-type Option struct {
-	Text string `json:"text"`
-	Arc  string `json:"arc"`
+	storyTemplate, err := NewStoryTemplate(storyTemplateFilename)
+	if err != nil {
+		return err
+	}
+
+	storyHandler, err := NewStoryHandler(storyContent, storyTemplate)
+	if err != nil {
+		return err
+	}
+
+	err = http.ListenAndServe(servePort, storyHandler)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func main() {
-	if err := demo.JSONDemo(); err != nil {
+	if err := Serve(); err != nil {
 		log.Fatal(err)
 	}
 }
