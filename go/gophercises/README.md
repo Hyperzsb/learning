@@ -12,6 +12,7 @@ Here lists projects I have followed and completed in this course (in chronologic
 - [**quiz-game**](quiz-game): [project description](https://github.com/gophercises/quiz)
 - [**url-shortener**](url-shortener): [project description](https://github.com/gophercises/urlshort)
 - [**choose-your-own-adventure**](choose-your-own-adventure): [project description](https://github.com/gophercises/cyoa)
+- [**html-link-parser**](html-link-parser): [project description](https://github.com/gophercises/link)
 
 ## Libraries
 
@@ -26,11 +27,13 @@ There are many important standard libraries and packages used within these proje
 - [log](https://pkg.go.dev/log)
 - [net/http](https://pkg.go.dev/net/http)
 - [os](https://pkg.go.dev/os)
+- [strings](https://pkg.go.dev/strings)
 - [time](https://pkg.go.dev/time)
 
 And some widely-used third-part ones:
 
-- [gopkg.in/yaml](https://pkg.go.dev/gopkg.in/yaml.v3)
+- [golang.org/x/net/html](https://pkg.go.dev/golang.org/x/net/html)
+- [gopkg.in/yaml.v3](https://pkg.go.dev/gopkg.in/yaml.v3)
 
 I believe it is really necessary to get familiar with standard libraries before going on with other third-part libraries and frameworks.
 But in scenarios for which there is no standard libraries designed, it is still essential to try some famous third-part ones.
