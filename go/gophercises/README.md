@@ -13,6 +13,7 @@ Here lists projects I have followed and completed in this course (in chronologic
 - [**url-shortener**](url-shortener): [project description](https://github.com/gophercises/urlshort)
 - [**choose-your-own-adventure**](choose-your-own-adventure): [project description](https://github.com/gophercises/cyoa)
 - [**html-link-parser**](html-link-parser): [project description](https://github.com/gophercises/link)
+- [**sitemap-builder**](sitemap-builder): [project description](https://github.com/gophercises/sitemap)
 
 ## Libraries
 
@@ -20,12 +21,14 @@ There are many important standard libraries and packages used within these proje
 
 - [encoding/csv](https://pkg.go.dev/encoding/csv)
 - [encoding/json](https://pkg.go.dev/encoding/json)
+- [encoding/xml](https://pkg.go.dev/encoding/xml)
 - [flag](https://pkg.go.dev/flag)
 - [fmt](https://pkg.go.dev/fmt)
 - [html/template](https://pkg.go.dev/html/template)
 - [io](https://pkg.go.dev/io)
 - [log](https://pkg.go.dev/log)
 - [net/http](https://pkg.go.dev/net/http)
+- [net/url](https://pkg.go.dev/net/url)
 - [os](https://pkg.go.dev/os)
 - [strings](https://pkg.go.dev/strings)
 - [time](https://pkg.go.dev/time)
