@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	if err := demo.CobraDemo(); err != nil {
+	if err := demo.BBoltDemo(); err != nil {
 		log.Fatal(err)
 	}
 }
