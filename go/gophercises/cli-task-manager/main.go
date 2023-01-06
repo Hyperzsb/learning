@@ -1,12 +1,12 @@
 package main
 
 import (
-	"gophercises/taskmanager/demo"
+	"gophercises/taskmanager/cmd"
 	"log"
 )
 
 func main() {
-	if err := demo.BBoltDemo(); err != nil {
+	if err := cmd.Execute(); err != nil {
 		log.Fatal(err)
 	}
 }
