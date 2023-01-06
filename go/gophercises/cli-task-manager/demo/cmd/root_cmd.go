@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -12,13 +11,13 @@ var (
 		Use:   "cobra-demo",
 		Short: "A demo for Cobra",
 		Long:  "This is a tiny demo for learning how to use Cobra to build a CLI app.",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(args)
-		},
 	}
 )
 
-func Execute() error {
+func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "turn on verbose mode")
+}
+
+func Execute() error {
 	return rootCmd.Execute()
 }
