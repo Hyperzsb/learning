@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"gophercises/taskmanager/db"
 )
 
 var (
@@ -18,7 +19,19 @@ var (
 		Long:    "List todo tasks by default, or you can specify tasks with different status",
 		GroupID: "general",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Println("list")
+			tasks, err := db.ListTask()
+			if err != nil {
+				return err
+			}
+
+			if len(tasks) == 0 {
+				fmt.Println("No task available")
+			}
+
+			for _, t := range tasks {
+				fmt.Println(t.ToString())
+			}
+
 			return nil
 		},
 	}
