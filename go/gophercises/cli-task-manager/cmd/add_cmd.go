@@ -43,9 +43,9 @@ var (
 					//	fmt.Println("?", err)
 					//}
 
-					var dep *task.DuplicateErr
+					var dep task.DuplicateErr
 					if errors.As(err, &dep) {
-						fmt.Println(err)
+						fmt.Printf("ERROR: %s\n", err)
 					} else {
 						return err
 					}

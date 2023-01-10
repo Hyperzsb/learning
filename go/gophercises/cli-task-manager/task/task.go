@@ -37,3 +37,11 @@ type DuplicateErr struct {
 func (de DuplicateErr) Error() string {
 	return fmt.Sprintf("duplicate task: '%s'; task name should be unique", de.Name)
 }
+
+type NotFoundErr struct {
+	Name string
+}
+
+func (nte NotFoundErr) Error() string {
+	return fmt.Sprintf("task '%s' not found", nte.Name)
+}
