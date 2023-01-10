@@ -14,6 +14,7 @@ Here lists projects I have followed and completed in this course (in chronologic
 - [**choose-your-own-adventure**](choose-your-own-adventure): [project description](https://github.com/gophercises/cyoa)
 - [**html-link-parser**](html-link-parser): [project description](https://github.com/gophercises/link)
 - [**sitemap-builder**](sitemap-builder): [project description](https://github.com/gophercises/sitemap)
+- [**cil-task-manager**](cli-task-manager): [project description](https://github.com/gophercises/task)
 
 ## Libraries
 
@@ -35,6 +36,8 @@ There are many important standard libraries and packages used within these proje
 
 And some widely-used third-part ones:
 
+- [github.com/spf13/cobra](https://pkg.go.dev/github.com/spf13/cobra)
+- [go.etcd.io/bbolt](https://pkg.go.dev/go.etcd.io/bbolt)
 - [golang.org/x/net/html](https://pkg.go.dev/golang.org/x/net/html)
 - [gopkg.in/yaml.v3](https://pkg.go.dev/gopkg.in/yaml.v3)
 
