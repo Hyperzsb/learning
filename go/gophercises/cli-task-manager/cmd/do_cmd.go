@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	doCmd = &cobra.Command{
+	undoDo bool
+	doCmd  = &cobra.Command{
 		Use:        "do",
 		Aliases:    []string{"d"},
 		SuggestFor: []string{"start", "begin"},
@@ -20,15 +21,26 @@ var (
 		Args:    cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			for _, name := range args {
-				if err := db.UpdateTask(name, task.Doing); err != nil {
+				var status task.Status
+				if undoDo {
+					status = task.Todo
+				} else {
+					status = task.Doing
+				}
+
+				if err := db.UpdateTask(name, status); err != nil {
 					var nte task.NotFoundErr
 					if errors.As(err, &nte) {
 						fmt.Printf("ERROR: %s\n", err)
 					} else {
 						return err
 					}
+				}
+
+				if undoDo {
+					fmt.Printf("Todo task '%s'\n", name)
 				} else {
-					fmt.Printf("Do task '%s'\n", name)
+					fmt.Printf("Doing task '%s'\n", name)
 				}
 			}
 			return nil
@@ -37,5 +49,7 @@ var (
 )
 
 func init() {
+	doCmd.Flags().BoolVarP(&undoDo, "undo", "u", false, "change status of a 'doing' task back to 'todo'")
+
 	rootCmd.AddCommand(doCmd)
 }

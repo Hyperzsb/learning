@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"gophercises/taskmanager/db"
+	"gophercises/taskmanager/task"
 )
 
 var (
@@ -29,7 +30,20 @@ var (
 			}
 
 			for _, t := range tasks {
-				fmt.Println(t.ToString())
+				switch t.Status {
+				case task.Todo:
+					if (!todo && !doing && !done) || todo || all {
+						fmt.Println(t.ToString())
+					}
+				case task.Doing:
+					if doing || all {
+						fmt.Println(t.ToString())
+					}
+				case task.Done:
+					if done || all {
+						fmt.Println(t.ToString())
+					}
+				}
 			}
 
 			return nil
@@ -38,7 +52,7 @@ var (
 )
 
 func init() {
-	listCmd.Flags().BoolVarP(&todo, "todo", "", true, "list todo tasks")
+	listCmd.Flags().BoolVarP(&todo, "todo", "", false, "list todo tasks")
 	listCmd.Flags().BoolVarP(&doing, "doing", "", false, "list doing tasks")
 	listCmd.Flags().BoolVarP(&done, "done", "", false, "list done tasks")
 	listCmd.Flags().BoolVarP(&all, "all", "a", false, "list all tasks")

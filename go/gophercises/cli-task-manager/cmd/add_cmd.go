@@ -56,6 +56,8 @@ var (
 					//	fmt.Println("?", e)
 					//}
 				}
+
+				fmt.Printf("Todo task '%s'\n", name)
 			}
 			return nil
 		},

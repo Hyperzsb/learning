@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	completeCmd = &cobra.Command{
+	undoComplete bool
+	completeCmd  = &cobra.Command{
 		Use:        "complete",
 		Aliases:    []string{"c"},
 		SuggestFor: []string{"finish"},
@@ -20,15 +21,26 @@ var (
 		Args:    cobra.MinimumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			for _, name := range args {
-				if err := db.UpdateTask(name, task.Done); err != nil {
+				var status task.Status
+				if undoComplete {
+					status = task.Doing
+				} else {
+					status = task.Done
+				}
+
+				if err := db.UpdateTask(name, status); err != nil {
 					var nte task.NotFoundErr
 					if errors.As(err, &nte) {
 						fmt.Printf("ERROR: %s\n", err)
 					} else {
 						return err
 					}
+				}
+
+				if undoComplete {
+					fmt.Printf("Doing task '%s'\n", name)
 				} else {
-					fmt.Printf("Complete task '%s'\n", name)
+					fmt.Printf("Done task '%s'\n", name)
 				}
 			}
 			return nil
@@ -37,5 +49,7 @@ var (
 )
 
 func init() {
+	completeCmd.Flags().BoolVarP(&undoComplete, "undo", "u", false, "change status of a 'done' task back to 'doing'")
+
 	rootCmd.AddCommand(completeCmd)
 }
