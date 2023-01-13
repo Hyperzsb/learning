@@ -6,14 +6,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "postgres"
-	dbname   = "mydb"
-)
-
 func printRows(db *sql.DB) error {
 	queryStmt := `select * from demo`
 	rows, err := db.Query(queryStmt)
@@ -42,8 +34,17 @@ func printRows(db *sql.DB) error {
 }
 
 func PostgresDemo() error {
+	const (
+		host     = "localhost"
+		port     = 5432
+		user     = "postgres"
+		password = "postgres"
+		dbname   = "mydb"
+	)
+
 	conn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
+	// Connect data source
 	db, err := sql.Open("postgres", conn)
 	if err != nil {
 		return err
@@ -55,6 +56,7 @@ func PostgresDemo() error {
 		return err
 	}
 
+	// Insert records
 	insertStmt := `insert into demo (id, number) values (1, '123456')`
 	_, err = db.Exec(insertStmt)
 	if err != nil {
@@ -67,17 +69,20 @@ func PostgresDemo() error {
 		return err
 	}
 
+	// Query or select records
 	err = printRows(db)
 	if err != nil {
 		return err
 	}
 
+	// Update records
 	updateStmt := `update demo set number=$1 where id=$2`
 	_, err = db.Exec(updateStmt, "234567", 1)
 	if err != nil {
 		return err
 	}
 
+	// Delete records
 	deleteStmt := `delete from demo where id=$1 or id=$2`
 	_, err = db.Exec(deleteStmt, 1, 2)
 	if err != nil {
