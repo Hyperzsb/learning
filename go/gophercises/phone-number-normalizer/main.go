@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	if err := demo.PostgresDemo(); err != nil {
+	if err := demo.GORMDemo(); err != nil {
 		log.Fatal(err)
 	}
 }
