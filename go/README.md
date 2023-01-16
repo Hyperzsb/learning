@@ -7,6 +7,27 @@
 
 ## Table of Contents
 
+*This table of contents is for this directory of this repo, not README itself. Anyway, this README is not too long.*
+
 - [**gophercises**](gophercises): [Gophercises](https://gophercises.com/) is a wonderful online course providing essential side project ideas for learning Go.
 I followed this course and provided my solution to these projects.
 - [**testing**](testing): Testing is so important in Go that I need to learn concepts and methods to write and run tests against my codes.
+
+## Learning Resources
+
+*Resources listed here are ordered by their value and importance.*
+
+When picking up a new technique, I was always confused about where I should start first and what I should learn first, so the first thing I did when I decided to learn Go was searching for a roadmap.
+And then I got this.
+[Go Roadmap](https://roadmap.sh/golang/) is a well-curated roadmap showing what should you learn at what phase.
+You can follow these steps to dig into the Go in a reasonable way.
+It also covers lots of well-known libraries and frameworks you need to use in your future study and work.
+
+[Go by Example](https://gobyexample.com/) is a really, really good tutorial for beginners, covering almost every important concept of Go.
+Most importantly, it has constant updates, which means you can learn new things after new releases of Go.
+
+[Gophercises](https://gophercises.com/) is a wonderful online course providing useful and meaningful side project ideas for learning Go.
+Maybe the contents and solutions there are little out of date, but it still provides some guidelines of how to become a "senior" (sort of) Go programmer.
+
+If you like learning new things by books, you may find these [Go Books](https://github.com/dariubs/GoBooks) helpful.
+This list includes many books, from entry level to advance level, teaching you how to code in Go more efficient, robust, and secure.
