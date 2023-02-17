@@ -1,0 +1,26 @@
+{
+  "name": "erc3525",
+  "version": "1.0.0",
+  "description": "A demo implementation of the ERC3525 standard",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy": "hardhat run scripts/deploy.js"
+  },
+  "keywords": [
+    "ethereum",
+    "erc3525",
+    "sft"
+  ],
+  "author": "hyperzsb",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.1",
+    "hardhat": "^2.12.7"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.8.1",
+    "@solvprotocol/erc-3525": "^1.1.0"
+  }
+}
