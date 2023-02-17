@@ -4,7 +4,7 @@ const {
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("CCS", function () {
+describe("Authority", function () {
   async function CCSFixture() {
     const experiationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
@@ -16,15 +16,7 @@ describe("CCS", function () {
     return { ccs, owner, authority, user, others, experiationTime };
   }
 
-  describe("Deployment", function () {
-    it("Should set the correct owner", async function () {
-      const { ccs, owner } = await loadFixture(CCSFixture);
-
-      expect(await ccs.owner()).to.equal(owner.address);
-    });
-  });
-
-  describe("Authority Registration", function () {
+  describe("Registration", function () {
     it("Should successfully register an authority by the owner", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
@@ -36,15 +28,15 @@ describe("CCS", function () {
       expect(await ccs.isAuthority(authority.address)).to.equal(true);
       expect(await ccs.isAuthorityValid(authority.address)).to.equal(true);
 
-      // Also test getAuthority here
-      const info = await ccs.getAuthority(authority.address);
+      // Also test authorityInfo here
+      const info = await ccs.authorityInfo(authority.address);
 
       expect(info.name).to.equal(name);
       expect(info.domain).to.equal(domain);
       expect(info.lastCheck)
         .to.be.above(0)
         .and.to.be.below((await time.latest()) + 60);
-      expect(info.authorizedSlots).to.deep.equal([]);
+      expect(info.slots).to.deep.equal([]);
     });
 
     it("Should be reverted if called by non-owner", async function () {
@@ -62,11 +54,11 @@ describe("CCS", function () {
 
       await expect(
         ccs.authorityRegister(authority.address, "", "")
-      ).to.be.revertedWith("empty name or domain");
+      ).to.be.revertedWith("empty authority name or domain");
     });
   });
 
-  describe("Authority Validation", function () {
+  describe("Validation", function () {
     it("Should recongize the unregistered account", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
@@ -92,7 +84,7 @@ describe("CCS", function () {
     });
   });
 
-  describe("Authority Renewal", function () {
+  describe("Renewal", function () {
     it("Should renew the authority ownership", async function () {
       const { ccs, authority, experiationTime } = await loadFixture(CCSFixture);
 

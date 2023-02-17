@@ -12,11 +12,53 @@ contract CCS is ERC3525 {
     }
 
     /**
+     * @notice This part is for slot-related features, including
+     *  - Defination
+     */
+
+    mapping(uint256 => string) private slots;
+
+    /**
+     * @dev Maps a slot number to a slot name, which can be used to provide a more meaningful label for a specific slot.
+     * @param _slot The slot number to define the name of
+     * @param _name The name to associate with the given slot number
+     * @dev Only the contract owner can define slot names.
+     * @dev The slot name must not be an empty string.
+     */
+    function slotDefine(uint256 _slot, string memory _name) external {
+        require(msg.sender == owner, "only the owner can define slots");
+        require(bytes(_name).length > 0, "empty slot name");
+
+        slots[_slot] = _name;
+    }
+
+    /**
+     * @notice Retrieves the name associated with a specific slot number.
+     * @param _slot The slot number to retrieve the name of
+     * @return The name associated with the given slot number, or "UNDEFINED" if the slot has not been defined
+     * @dev If the slot has not been defined, the function returns "UNDEFINED".
+     */
+    function slotInfo(uint _slot) public view returns (string memory) {
+        if (bytes(slots[_slot]).length == 0) {
+            return "UNDEFINED";
+        } else {
+            return slots[_slot];
+        }
+    }
+
+    function slotAllocate(uint _slot, address _account) external {
+        require(msg.sender == owner, "only the owner can allocate slots");
+        require(isAuthority(_account), "authority is never registered");
+        require(bytes(slots[_slot]).length > 0, "slot is never defined");
+
+        authorities[_account].slots.push(_slot);
+    }
+
+    /**
      * @notice This part is for authority-related features, including
      *  - Registration
      *  - Validation
-     *  - Token mintage
-     *  - Token distribution
+     *  - Renewal
      */
 
     struct Authority {
@@ -25,7 +67,7 @@ contract CCS is ERC3525 {
         /// @dev Timestamp of the last time authority register or renew its ownership of the corresponding domain
         uint256 lastCheck;
         /// @dev Slots where the authority can mint corresponding tokens
-        uint256[] authorizedSlots;
+        uint256[] slots;
     }
 
     mapping(address => Authority) private authorities;
@@ -48,7 +90,7 @@ contract CCS is ERC3525 {
         require(msg.sender == owner, "only the owner can register authorities");
         require(
             bytes(_name).length > 0 && bytes(_domain).length > 0,
-            "empty name or domain"
+            "empty authority name or domain"
         );
 
         // TODO: Add verification procedures using oracles to validate the ownership of the domain
@@ -57,7 +99,7 @@ contract CCS is ERC3525 {
             name: _name,
             domain: _domain,
             lastCheck: block.timestamp,
-            authorizedSlots: new uint256[](0)
+            slots: new uint256[](0)
         });
     }
 
@@ -99,7 +141,7 @@ contract CCS is ERC3525 {
      * @return The Authority struct associated with the given account
      * @dev The function requires the given account to be registered as an authority
      */
-    function getAuthority(
+    function authorityInfo(
         address _account
     ) public view returns (Authority memory) {
         require(isAuthority(_account), "it is no authority");
