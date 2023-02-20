@@ -105,7 +105,7 @@ contract CCS is ERC3525 {
 
     mapping(address => Authority) private authorities;
 
-    uint256 public experiationTime = 365 * 24 * 60 * 60;
+    uint256 public expirationTime = 365 * 24 * 60 * 60;
 
     /**
      * @notice Registers a new authority with the given account, name, and domain
@@ -160,7 +160,7 @@ contract CCS is ERC3525 {
         require(isAuthority(_account), "authority is never registered");
 
         if (
-            authorities[_account].lastCheck + experiationTime < block.timestamp
+            authorities[_account].lastCheck + expirationTime < block.timestamp
         ) {
             return false;
         } else {
@@ -198,6 +198,26 @@ contract CCS is ERC3525 {
         /// @custom:todo Add verification procedures, using oracles to validate the ownership of the domain
 
         authorities[_account].lastCheck = block.timestamp;
+    }
+
+    /**
+     * @notice Changes the expiration time of the authorities' validity.
+     * @param _expirationTime The new expiration time, in seconds.
+     * @dev Only the contract owner is allowed to change the expiration time.
+     * @dev The expiration time must be within a reasonable range, i.e., between 1 day and 3 years.
+     */
+    function changeExpirationTime(uint256 _expirationTime) external {
+        require(
+            msg.sender == owner,
+            "only the owner can change expiration time"
+        );
+        require(
+            _expirationTime >= 24 * 60 * 60 &&
+                _expirationTime <= 3 * 365 * 24 * 60 * 60,
+            "expiration time should be reasonable"
+        );
+
+        expirationTime = _expirationTime;
     }
 
     /**
