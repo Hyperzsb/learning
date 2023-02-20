@@ -3,7 +3,6 @@ const {
   loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
-const { BigNumber } = require("ethers");
 
 describe("Token", function () {
   async function CCSFixture() {

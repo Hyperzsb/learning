@@ -452,4 +452,21 @@ contract CCS is ERC3525 {
 
         super.safeTransferFrom(_from, _to, _tokenId);
     }
+
+    /**
+     * @notice This part is for user-related features, including
+     *  - Token Info
+     */
+
+    function tokensOf(
+        address _account
+    ) external view returns (uint256[] memory) {
+        uint256 balance = balanceOf(_account);
+        uint256[] memory tokens = new uint256[](balance);
+        for (uint256 i = 0; i < balance; i++) {
+            tokens[i] = tokenOfOwnerByIndex(_account, i);
+        }
+
+        return tokens;
+    }
 }
