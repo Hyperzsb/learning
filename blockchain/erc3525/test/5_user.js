@@ -3,7 +3,6 @@ const {
   loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
-const exp = require("constants");
 
 describe("User", function () {
   async function CCSFixture() {

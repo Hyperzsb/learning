@@ -1,0 +1,29 @@
+<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml">
+      <style>
+        .container {
+          width: 600px;
+          height: 600px;
+
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          background-color: white;
+          color: black;
+
+          text-align: center;
+        }
+      </style>
+
+      <div class="container">
+        <h1>Community Credit System (CCS)</h1>
+        <p>This contract is used to provide credit and reputation services to users in the community based on ERC3525 Semi-Fungible Token standard.</p>
+        <p><b>Address: </b>address</p>
+        <p><b>Owner: </b>owner</p>
+      </div>
+    </div>
+  </foreignObject>
+</svg>

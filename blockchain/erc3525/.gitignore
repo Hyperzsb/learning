@@ -1,3 +1,6 @@
+# Custom
+build
+
 node_modules
 .env
 coverage
@@ -8,4 +11,3 @@ typechain-types
 # Hardhat files
 cache
 artifacts
-

@@ -6,6 +6,9 @@ import "@solvprotocol/erc-3525/ERC3525.sol";
 import "hardhat/console.sol";
 
 contract CCS is ERC3525 {
+    using Strings for address;
+    using Strings for uint256;
+
     address public owner;
 
     constructor() ERC3525("Community Credit System", "CCS", 16) {
@@ -538,5 +541,151 @@ contract CCS is ERC3525 {
         }
 
         return allTokens;
+    }
+
+    /**
+     * @notice This part is for appearance-related features, including
+     *  - Contract URI
+     *  - Slot URI
+     *  - Token URI
+     */
+
+    /**
+     * @dev Returns the URI for this contract, which provides metadata about the contract itself.
+     * @return A string representing the URI for this contract.
+     */
+    function contractURI()
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        return
+            string(
+                abi.encodePacked(
+                    '<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">'
+                    '  <foreignObject width="100%" height="100%">'
+                    '    <div xmlns="http://www.w3.org/1999/xhtml">'
+                    "      <style>"
+                    "        .container {"
+                    "          width: 600px;"
+                    "          height: 600px;"
+                    "          display: flex;"
+                    "          flex-direction: column;"
+                    "          justify-content: center;"
+                    "          align-items: center;"
+                    "          background-color: white;"
+                    "          color: black;"
+                    "          text-align: center;"
+                    "        }"
+                    "      </style>"
+                    '      <div class="container">'
+                    "        <h1>Community Credit System (CCS)</h1>"
+                    "        <p>This contract is used to provide credit and reputation services to users in the community based on ERC3525 Semi-Fungible Token standard.</p>"
+                    "        <p><b>Address: </b>",
+                    address(this).toHexString(),
+                    "</p>"
+                    "        <p><b>Owner: </b>",
+                    owner.toHexString(),
+                    "</p>"
+                    "      </div>"
+                    "    </div>"
+                    "  </foreignObject>"
+                    "</svg>"
+                )
+            );
+    }
+
+    /**
+     * @dev Returns the URI for the specified slot, which provides metadata about the slot.
+     * @param _slot The ID of the slot.
+     * @return A string representing the URI for the specified slot.
+     */
+    function slotURI(
+        uint256 _slot
+    ) public view virtual override returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    '<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">'
+                    '  <foreignObject width="100%" height="100%">'
+                    '    <div xmlns="http://www.w3.org/1999/xhtml">'
+                    "      <style>"
+                    "        .container {"
+                    "          width: 600px;"
+                    "          height: 600px;"
+                    "          display: flex;"
+                    "          flex-direction: column;"
+                    "          justify-content: center;"
+                    "          align-items: center;"
+                    "          background-color: white;"
+                    "          color: black;"
+                    "          text-align: center;"
+                    "        }"
+                    "      </style>"
+                    '      <div class="container">'
+                    "        <h1>CCS - Slot</h1>"
+                    "        <p><b>ID: </b>",
+                    _slot.toString(),
+                    "</p>"
+                    "        <p><b>Name: </b>",
+                    slotInfo(_slot),
+                    "</p>"
+                    "      </div>"
+                    "    </div>"
+                    "  </foreignObject>"
+                    "</svg>"
+                )
+            );
+    }
+
+    /**
+     * @dev Returns the URI for the specified token, which provides metadata about the token.
+     * @param _tokenId The ID of the token.
+     * @return A string representing the URI for the specified token.
+     */
+    function tokenURI(
+        uint256 _tokenId
+    ) public view virtual override returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    '<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">'
+                    '  <foreignObject width="100%" height="100%">'
+                    '    <div xmlns="http://www.w3.org/1999/xhtml">'
+                    "      <style>"
+                    "        .container {"
+                    "          width: 600px;"
+                    "          height: 600px;"
+                    "          display: flex;"
+                    "          flex-direction: column;"
+                    "          justify-content: center;"
+                    "          align-items: center;"
+                    "          background-color: white;"
+                    "          color: black;"
+                    "          text-align: center;"
+                    "        }"
+                    "      </style>"
+                    '      <div class="container">'
+                    "        <h1>CCS - Token</h1>"
+                    "        <p><b>ID: </b>",
+                    _tokenId.toString(),
+                    "</p>"
+                    "        <p><b>Owner: </b>",
+                    ownerOf(_tokenId).toHexString(),
+                    "</p>"
+                    "        <p><b>From: </b>",
+                    tokenFrom[_tokenId].toHexString(),
+                    "</p>"
+                    "        <p><b>Credit: </b>",
+                    balanceOf(_tokenId).toString(),
+                    "</p>"
+                    "      </div>"
+                    "    </div>"
+                    "  </foreignObject>"
+                    "</svg>"
+                )
+            );
     }
 }
