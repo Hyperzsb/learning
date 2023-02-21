@@ -21,6 +21,78 @@ describe("User", function () {
     return { ccs, owner, authority, user, others, experiationTime };
   }
 
+  describe("Slot Info", function () {
+    it("Should successfully get slot info of the user", async function () {
+      const { ccs, authority, user } = await loadFixture(CCSFixture);
+
+      // Define some slots
+      await ccs.slotDefine(1155, "ERC1155");
+      await ccs.slotDefine(3525, "ERC3525");
+
+      // Register an authority
+      const name = "Authority";
+      const domain = "authority.com";
+      await ccs.authorityRegister(authority.address, name, domain);
+
+      // Allocate slots to the authority
+      await ccs.slotAllocate(1155, authority.address);
+      await ccs.slotAllocate(3525, authority.address);
+
+      // Mint some tokens in each slot
+      const mint1TxResponse = await ccs.connect(authority).mint(1155, 10);
+      const mint1TxRecipt = await mint1TxResponse.wait();
+      const mint1TxEvents = mint1TxRecipt.events.filter(
+        (event) => event.event === "TransferValue"
+      );
+      const originalTokenId1 = mint1TxEvents[0].args._toTokenId;
+
+      const mint2TxResponse = await ccs.connect(authority).mint(3525, 10);
+      const mint2TxRecipt = await mint2TxResponse.wait();
+      const mint2TxEvents = mint2TxRecipt.events.filter(
+        (event) => event.event === "TransferValue"
+      );
+      const originalTokenId2 = mint2TxEvents[0].args._toTokenId;
+
+      const mint3TxResponse = await ccs.connect(authority).mint(3525, 10);
+      const mint3TxRecipt = await mint3TxResponse.wait();
+      const mint3TxEvents = mint3TxRecipt.events.filter(
+        (event) => event.event === "TransferValue"
+      );
+      const originalTokenId3 = mint3TxEvents[0].args._toTokenId;
+
+      // Transfer tokens to the user
+      await ccs
+        .connect(authority)
+        ["transferFrom(uint256,address,uint256)"](
+          originalTokenId1,
+          user.address,
+          1
+        );
+
+      await ccs
+        .connect(authority)
+        ["transferFrom(uint256,address,uint256)"](
+          originalTokenId2,
+          user.address,
+          2
+        );
+
+      await ccs
+        .connect(authority)
+        ["transferFrom(uint256,address,uint256)"](
+          originalTokenId3,
+          user.address,
+          3
+        );
+
+      const slots = await ccs.slotsOf(user.address);
+
+      expect(slots.length).to.equal(2);
+
+      expect(slots).to.deep.equal([1155, 3525]);
+    });
+  });
+
   describe("Token Info", function () {
     it("Should successfully get token info of the user", async function () {
       const { ccs, authority, user } = await loadFixture(CCSFixture);
