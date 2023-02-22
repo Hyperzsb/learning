@@ -6,17 +6,17 @@ const { expect } = require("chai");
 
 describe("Slot", function () {
   async function CCSFixture() {
-    const experiationTime = (await time.latest()) + 365 * 24 * 60 * 60;
+    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
     const [owner, authority, user, others] = await ethers.getSigners();
 
     const CCS = await ethers.getContractFactory("CCS");
     const ccs = await CCS.deploy();
 
-    return { ccs, owner, authority, user, others, experiationTime };
+    return { ccs, owner, authority, user, others, expirationTime };
   }
 
-  describe("Defination", function () {
+  describe("Definition", function () {
     it("Should successfully define a slot", async function () {
       const { ccs } = await loadFixture(CCSFixture);
 

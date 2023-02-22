@@ -7,7 +7,7 @@ const { expect } = require("chai");
 describe("User", function () {
   async function CCSFixture() {
     // Set the expiration time of the authority
-    const experiationTime = (await time.latest()) + 365 * 24 * 60 * 60;
+    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
     // Get the contract's signers
     const [owner, authority, user, others] = await ethers.getSigners();
@@ -17,7 +17,7 @@ describe("User", function () {
     const ccs = await CCS.deploy();
 
     // Return the contract instance and other variables as an object
-    return { ccs, owner, authority, user, others, experiationTime };
+    return { ccs, owner, authority, user, others, expirationTime };
   }
 
   describe("Slot Info", function () {
@@ -39,22 +39,22 @@ describe("User", function () {
 
       // Mint some tokens in each slot
       const mint1TxResponse = await ccs.connect(authority).mint(1155, 10);
-      const mint1TxRecipt = await mint1TxResponse.wait();
-      const mint1TxEvents = mint1TxRecipt.events.filter(
+      const mint1TxReceipt = await mint1TxResponse.wait();
+      const mint1TxEvents = mint1TxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const originalTokenId1 = mint1TxEvents[0].args._toTokenId;
 
       const mint2TxResponse = await ccs.connect(authority).mint(3525, 10);
-      const mint2TxRecipt = await mint2TxResponse.wait();
-      const mint2TxEvents = mint2TxRecipt.events.filter(
+      const mint2TxReceipt = await mint2TxResponse.wait();
+      const mint2TxEvents = mint2TxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const originalTokenId2 = mint2TxEvents[0].args._toTokenId;
 
       const mint3TxResponse = await ccs.connect(authority).mint(3525, 10);
-      const mint3TxRecipt = await mint3TxResponse.wait();
-      const mint3TxEvents = mint3TxRecipt.events.filter(
+      const mint3TxReceipt = await mint3TxResponse.wait();
+      const mint3TxEvents = mint3TxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const originalTokenId3 = mint3TxEvents[0].args._toTokenId;
@@ -111,15 +111,15 @@ describe("User", function () {
 
       // Mint some tokens in each slot
       const mint1TxResponse = await ccs.connect(authority).mint(1155, 10);
-      const mint1TxRecipt = await mint1TxResponse.wait();
-      const mint1TxEvents = mint1TxRecipt.events.filter(
+      const mint1TxReceipt = await mint1TxResponse.wait();
+      const mint1TxEvents = mint1TxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const originalTokenId1 = mint1TxEvents[0].args._toTokenId;
 
       const mint2TxResponse = await ccs.connect(authority).mint(3525, 10);
-      const mint2TxRecipt = await mint2TxResponse.wait();
-      const mint2TxEvents = mint2TxRecipt.events.filter(
+      const mint2TxReceipt = await mint2TxResponse.wait();
+      const mint2TxEvents = mint2TxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const originalTokenId2 = mint2TxEvents[0].args._toTokenId;

@@ -6,14 +6,14 @@ const { expect } = require("chai");
 
 describe("Authority", function () {
   async function CCSFixture() {
-    const experiationTime = (await time.latest()) + 365 * 24 * 60 * 60;
+    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
     const [owner, authority, user, others] = await ethers.getSigners();
 
     const CCS = await ethers.getContractFactory("CCS");
     const ccs = await CCS.deploy();
 
-    return { ccs, owner, authority, user, others, experiationTime };
+    return { ccs, owner, authority, user, others, expirationTime };
   }
 
   describe("Registration", function () {
@@ -59,7 +59,7 @@ describe("Authority", function () {
   });
 
   describe("Validation", function () {
-    it("Should recongize the unregistered account", async function () {
+    it("Should recognize the unregistered account", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       expect(await ccs.isAuthority(others.address)).to.equal(false);
@@ -68,35 +68,35 @@ describe("Authority", function () {
       );
     });
 
-    it("Should be valid until the experiation time", async function () {
-      const { ccs, authority, experiationTime } = await loadFixture(CCSFixture);
+    it("Should be valid until the expiration time", async function () {
+      const { ccs, authority, expirationTime } = await loadFixture(CCSFixture);
 
       const name = "Authority";
       const domain = "authority.com";
 
       await ccs.authorityRegister(authority.address, name, domain);
 
-      await time.increaseTo(experiationTime - 60);
+      await time.increaseTo(expirationTime - 60);
       expect(await ccs.isAuthorityValid(authority.address)).to.equal(true);
 
-      await time.increaseTo(experiationTime + 60);
+      await time.increaseTo(expirationTime + 60);
       expect(await ccs.isAuthorityValid(authority.address)).to.equal(false);
     });
   });
 
   describe("Renewal", function () {
     it("Should renew the authority ownership", async function () {
-      const { ccs, authority, experiationTime } = await loadFixture(CCSFixture);
+      const { ccs, authority, expirationTime } = await loadFixture(CCSFixture);
 
       const name = "Authority";
       const domain = "authority.com";
 
       await ccs.authorityRegister(authority.address, name, domain);
 
-      await time.increaseTo(experiationTime - 60);
+      await time.increaseTo(expirationTime - 60);
       expect(await ccs.isAuthorityValid(authority.address)).to.equal(true);
 
-      await time.increaseTo(experiationTime + 60);
+      await time.increaseTo(expirationTime + 60);
       expect(await ccs.isAuthorityValid(authority.address)).to.equal(false);
 
       await ccs.authorityRenew(authority.address);
@@ -133,7 +133,7 @@ describe("Authority", function () {
       await ccs.authorityRegister(authority.address, name, domain);
 
       await expect(ccs.authorityRenew(authority.address)).to.be.revertedWith(
-        "authority is still vaild"
+        "authority is still valid"
       );
     });
   });

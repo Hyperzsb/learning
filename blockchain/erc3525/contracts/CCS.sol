@@ -17,7 +17,7 @@ contract CCS is ERC3525 {
 
     /**
      * @notice This part is for slot-related features, including
-     *  - Defination
+     *  - Definition
      *  - Allocation
      */
 
@@ -197,7 +197,7 @@ contract CCS is ERC3525 {
         /// @notice This "owner-only" restriction is only temporary for simplicity
         require(msg.sender == owner, "only the owner can renew authorities");
         require(isAuthority(_account), "authority is never registered");
-        require(!isAuthorityValid(_account), "authority is still vaild");
+        require(!isAuthorityValid(_account), "authority is still valid");
 
         /// @custom:todo Add verification procedures, using oracles to validate the ownership of the domain
 
@@ -244,10 +244,10 @@ contract CCS is ERC3525 {
      */
     function mint(uint256 _slot, uint256 _value) external returns (uint256) {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
         require(
             isSlotAllocatedTo(_slot, msg.sender),
-            "slot is not alloctaed to authority"
+            "slot is not allocated to authority"
         );
 
         uint256 tokenId = _mint(msg.sender, _slot, _value);
@@ -257,7 +257,7 @@ contract CCS is ERC3525 {
     }
 
     /**
-     * @notice These following functions should be overrided to deny non-suthority callers
+     * @notice These following functions should be overrided to deny non-authority callers
      */
 
     /**
@@ -274,7 +274,7 @@ contract CCS is ERC3525 {
         uint256 _value
     ) public payable virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         super.approve(_tokenId, _to, _value);
     }
@@ -291,7 +291,7 @@ contract CCS is ERC3525 {
         uint256 _tokenId
     ) public payable virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         super.approve(_to, _tokenId);
     }
@@ -307,7 +307,7 @@ contract CCS is ERC3525 {
         uint256 _tokenId
     ) public view virtual override returns (address) {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         return super.getApproved(_tokenId);
     }
@@ -324,7 +324,7 @@ contract CCS is ERC3525 {
         bool _approved
     ) public virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         super.setApprovalForAll(_operator, _approved);
     }
@@ -342,7 +342,7 @@ contract CCS is ERC3525 {
         address _operator
     ) public view virtual override returns (bool) {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         return super.isApprovedForAll(_owner, _operator);
     }
@@ -360,7 +360,7 @@ contract CCS is ERC3525 {
         address _operator
     ) public view virtual override returns (uint256) {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         return super.allowance(_tokenId, _operator);
     }
@@ -380,7 +380,7 @@ contract CCS is ERC3525 {
         uint256 _value
     ) public payable virtual override returns (uint256) {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         uint256 tokenId = super.transferFrom(_fromTokenId, _to, _value);
         tokenFrom[tokenId] = msg.sender;
@@ -402,7 +402,7 @@ contract CCS is ERC3525 {
         uint256 _value
     ) public payable virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         tokenFrom[_toTokenId] = msg.sender;
 
@@ -423,7 +423,7 @@ contract CCS is ERC3525 {
         uint256 _tokenId
     ) public payable virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         tokenFrom[_tokenId] = msg.sender;
 
@@ -446,7 +446,7 @@ contract CCS is ERC3525 {
         bytes memory _data
     ) public payable virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         tokenFrom[_tokenId] = msg.sender;
 
@@ -467,7 +467,7 @@ contract CCS is ERC3525 {
         uint256 _tokenId
     ) public payable virtual override {
         require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not vaild");
+        require(isAuthorityValid(msg.sender), "authority is not valid");
 
         tokenFrom[_tokenId] = msg.sender;
 

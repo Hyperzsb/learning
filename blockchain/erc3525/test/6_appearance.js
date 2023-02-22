@@ -7,7 +7,7 @@ const { expect } = require("chai");
 describe("Appearance", function () {
   async function CCSFixture() {
     // Set the expiration time of the authority
-    const experiationTime = (await time.latest()) + 365 * 24 * 60 * 60;
+    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
     // Get the contract's signers
     const [owner, authority, user, others] = await ethers.getSigners();
@@ -17,7 +17,7 @@ describe("Appearance", function () {
     const ccs = await CCS.deploy();
 
     // Return the contract instance and other variables as an object
-    return { ccs, owner, authority, user, others, experiationTime };
+    return { ccs, owner, authority, user, others, expirationTime };
   }
 
   describe("Contract URI", function () {
@@ -68,8 +68,8 @@ describe("Appearance", function () {
       const slot = 3525;
       const value = 10;
       const txResponse = await ccs.connect(authority).mint(slot, value);
-      const txRecipt = await txResponse.wait();
-      const tokenId = txRecipt.events.find(
+      const txReceipt = await txResponse.wait();
+      const tokenId = txReceipt.events.find(
         (event) => event.event === "TransferValue"
       ).args._toTokenId;
 
@@ -100,13 +100,13 @@ describe("Appearance", function () {
       const mintTxResponse = await ccs
         .connect(authority)
         .mint(slot, originalValue);
-      const mintTxRecipt = await mintTxResponse.wait();
-      const mintTxEvents = mintTxRecipt.events.filter(
+      const mintTxReceipt = await mintTxResponse.wait();
+      const mintTxEvents = mintTxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const tokenId = mintTxEvents[0].args._toTokenId;
 
-      const transferedValue = 1;
+      const transferredValue = 1;
 
       // Get the token ids by emitted event
       const transferTxResponse = await ccs
@@ -114,10 +114,10 @@ describe("Appearance", function () {
         ["transferFrom(uint256,address,uint256)"](
           tokenId,
           user.address,
-          transferedValue
+          transferredValue
         );
-      const transferTxRecipt = await transferTxResponse.wait();
-      const transferTxEvents = transferTxRecipt.events.filter(
+      const transferTxReceipt = await transferTxResponse.wait();
+      const transferTxEvents = transferTxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
 

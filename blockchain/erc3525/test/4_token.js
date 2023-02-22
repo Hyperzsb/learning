@@ -7,7 +7,7 @@ const { expect } = require("chai");
 describe("Token", function () {
   async function CCSFixture() {
     // Set the expiration time of the authority
-    const experiationTime = (await time.latest()) + 365 * 24 * 60 * 60;
+    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
     // Get the contract's signers
     const [owner, authority, user, others] = await ethers.getSigners();
@@ -17,7 +17,7 @@ describe("Token", function () {
     const ccs = await CCS.deploy();
 
     // Return the contract instance and other variables as an object
-    return { ccs, owner, authority, user, others, experiationTime };
+    return { ccs, owner, authority, user, others, expirationTime };
   }
 
   describe("Mintage", function () {
@@ -39,8 +39,8 @@ describe("Token", function () {
       const slot = 3525;
       const value = 10;
       const txResponse = await ccs.connect(authority).mint(slot, value);
-      const txRecipt = await txResponse.wait();
-      const tokenId = txRecipt.events.find(
+      const txReceipt = await txResponse.wait();
+      const tokenId = txReceipt.events.find(
         (event) => event.event === "TransferValue"
       ).args._toTokenId;
 
@@ -72,7 +72,7 @@ describe("Token", function () {
 
     it("Should revert when authority is not valid", async function () {
       // Load the fixture
-      const { ccs, authority, experiationTime } = await loadFixture(CCSFixture);
+      const { ccs, authority, expirationTime } = await loadFixture(CCSFixture);
 
       // Define a new slot
       const slot = 3525;
@@ -87,12 +87,12 @@ describe("Token", function () {
       await ccs.slotAllocate(3525, authority.address);
 
       // Increase time past the authority's expiration time
-      await time.increaseTo(experiationTime + 60);
+      await time.increaseTo(expirationTime + 60);
 
       // Verify that a non-valid authority cannot mint a new token
       const value = 10;
       await expect(ccs.connect(authority).mint(slot, value)).to.be.revertedWith(
-        "authority is not vaild"
+        "authority is not valid"
       );
     });
 
@@ -111,7 +111,7 @@ describe("Token", function () {
       // Mint the token without slot allocation
       const value = 10;
       await expect(ccs.connect(authority).mint(slot, value)).to.be.revertedWith(
-        "slot is not alloctaed to authority"
+        "slot is not allocated to authority"
       );
     });
   });
@@ -136,13 +136,13 @@ describe("Token", function () {
       const mintTxResponse = await ccs
         .connect(authority)
         .mint(slot, originalValue);
-      const mintTxRecipt = await mintTxResponse.wait();
-      const mintTxEvents = mintTxRecipt.events.filter(
+      const mintTxReceipt = await mintTxResponse.wait();
+      const mintTxEvents = mintTxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const tokenId = mintTxEvents[0].args._toTokenId;
 
-      const transferedValue = 1;
+      const transferredValue = 1;
 
       // Get the token ids by emitted event
       const transferTxResponse = await ccs
@@ -150,10 +150,10 @@ describe("Token", function () {
         ["transferFrom(uint256,address,uint256)"](
           tokenId,
           user.address,
-          transferedValue
+          transferredValue
         );
-      const transferTxRecipt = await transferTxResponse.wait();
-      const transferTxEvents = transferTxRecipt.events.filter(
+      const transferTxReceipt = await transferTxResponse.wait();
+      const transferTxEvents = transferTxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
 
@@ -163,11 +163,11 @@ describe("Token", function () {
       expect(tokenId).to.equal(fromTokenId);
 
       expect(await ccs["balanceOf(uint256)"](fromTokenId)).to.equal(
-        originalValue - transferedValue
+        originalValue - transferredValue
       );
 
       expect(await ccs["balanceOf(uint256)"](toTokenId)).to.equal(
-        transferedValue
+        transferredValue
       );
     });
 
@@ -190,13 +190,13 @@ describe("Token", function () {
       const mintTxResponse = await ccs
         .connect(authority)
         .mint(slot, originalValue);
-      const mintTxRecipt = await mintTxResponse.wait();
-      const mintTxEvents = mintTxRecipt.events.filter(
+      const mintTxReceipt = await mintTxResponse.wait();
+      const mintTxEvents = mintTxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
       const tokenId = mintTxEvents[0].args._toTokenId;
 
-      const transferedValue = 1;
+      const transferredValue = 1;
 
       // Get the token ids by emitted event
       const transferTxResponse = await ccs
@@ -204,10 +204,10 @@ describe("Token", function () {
         ["transferFrom(uint256,address,uint256)"](
           tokenId,
           user.address,
-          transferedValue
+          transferredValue
         );
-      const transferTxRecipt = await transferTxResponse.wait();
-      const transferTxEvents = transferTxRecipt.events.filter(
+      const transferTxReceipt = await transferTxResponse.wait();
+      const transferTxEvents = transferTxReceipt.events.filter(
         (event) => event.event === "TransferValue"
       );
 
@@ -219,7 +219,7 @@ describe("Token", function () {
           ["transferFrom(uint256,address,uint256)"](
             toTokenId,
             others.address,
-            transferedValue
+            transferredValue
           )
       ).to.be.revertedWith("authority is never registered");
     });
