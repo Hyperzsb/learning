@@ -2,14 +2,14 @@
 
 ## Notice
 
-This project is in its early, and the doc will not be updated until basic features are implemented.
+This project is still in its early stage, and the doc will not be updated until basic features are implemented.
 
 ## Developer Guide
 
-Complie source codes:
+Compile source codes:
 
 ```shell
-npx hardhat complie
+npx hardhat compile
 ```
 
 Run test cases:
