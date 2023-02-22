@@ -141,4 +141,50 @@ describe("Authority", function () {
       );
     });
   });
+
+  describe("Expiration Time", function () {
+    it("Should change the expiration time by the owner", async function () {
+      const { ccs, authority } = await loadFixture(CCSFixture);
+
+      const name = "Authority";
+      const domain = "authority.com";
+      await ccs.authorityRegister(authority.address, name, domain);
+
+      const newExpirationPeriod = 30 * 24 * 60 * 60;
+      const newExpirationTime = (await time.latest()) + 30 * 24 * 60 * 60;
+
+      await ccs.changeExpirationTime(newExpirationPeriod);
+
+      await time.increaseTo(newExpirationTime - 60);
+      expect(await ccs.isAuthorityValid(authority.address)).to.equal(true);
+
+      await time.increaseTo(newExpirationTime + 60);
+      expect(await ccs.isAuthorityValid(authority.address)).to.equal(false);
+    });
+
+    it("Should be reverted if called by a non-owner", async function () {
+      const { ccs, others } = await loadFixture(CCSFixture);
+
+      const newExpirationPeriod = 30 * 24 * 60 * 60;
+
+      await expect(
+        ccs.connect(others).changeExpirationTime(newExpirationPeriod)
+      ).to.be.revertedWith("only the owner can change the expiration time");
+    });
+
+    it("Should be reverted if the new expiration time is non-reasonable", async function () {
+      const { ccs } = await loadFixture(CCSFixture);
+
+      const smallExpirationPeriod = 60 * 60;
+      const largeExpirationPeriod = 5 * 365 * 24 * 60 * 60;
+
+      await expect(
+        ccs.changeExpirationTime(smallExpirationPeriod)
+      ).to.be.revertedWith("expiration time should be reasonable");
+
+      await expect(
+        ccs.changeExpirationTime(largeExpirationPeriod)
+      ).to.be.revertedWith("expiration time should be reasonable");
+    });
+  });
 });
