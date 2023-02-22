@@ -6,18 +6,22 @@ const { expect } = require("chai");
 
 describe("Authority", function () {
   async function CCSFixture() {
+    // Set the expiration time of the authority
     const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
 
-    const [owner, authority, user, others] = await ethers.getSigners();
+    // Get the contract's signers
+    const [owner, authority, others] = await ethers.getSigners();
 
+    // Deploy a new instance of the `CCS` contract
     const CCS = await ethers.getContractFactory("CCS");
     const ccs = await CCS.deploy();
 
-    return { ccs, owner, authority, user, others, expirationTime };
+    // Return the contract instance and other variables as an object
+    return { ccs, owner, authority, others, expirationTime };
   }
 
   describe("Registration", function () {
-    it("Should successfully register an authority by the owner", async function () {
+    it("Should register an authority by the owner", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       const name = "Authority";
@@ -39,7 +43,7 @@ describe("Authority", function () {
       expect(info.slots).to.deep.equal([]);
     });
 
-    it("Should be reverted if called by non-owner", async function () {
+    it("Should be reverted if called by a non-owner", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       await expect(
@@ -49,7 +53,7 @@ describe("Authority", function () {
       ).to.be.revertedWith("only the owner can register authorities");
     });
 
-    it("Should be reverted if given empty name or domain", async function () {
+    it("Should be reverted if given an empty name or domain", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       await expect(
@@ -59,7 +63,7 @@ describe("Authority", function () {
   });
 
   describe("Validation", function () {
-    it("Should recognize the unregistered account", async function () {
+    it("Should recognize an unregistered account", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       expect(await ccs.isAuthority(others.address)).to.equal(false);
@@ -85,7 +89,7 @@ describe("Authority", function () {
   });
 
   describe("Renewal", function () {
-    it("Should renew the authority ownership", async function () {
+    it("Should renew the authority ownership by the owner", async function () {
       const { ccs, authority, expirationTime } = await loadFixture(CCSFixture);
 
       const name = "Authority";
@@ -103,7 +107,7 @@ describe("Authority", function () {
       expect(await ccs.isAuthorityValid(authority.address)).to.equal(true);
     });
 
-    it("Should be reverted if called by non-owner", async function () {
+    it("Should be reverted if called by a non-owner", async function () {
       const { ccs, authority, others } = await loadFixture(CCSFixture);
 
       const name = "Authority";
@@ -116,7 +120,7 @@ describe("Authority", function () {
       ).to.be.revertedWith("only the owner can renew authorities");
     });
 
-    it("Should be reverted if given the unregistered account", async function () {
+    it("Should be reverted if given an unregistered account", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       await expect(ccs.authorityRenew(others.address)).to.be.revertedWith(

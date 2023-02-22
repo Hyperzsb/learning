@@ -1,23 +1,21 @@
-const {
-  time,
-  loadFixture,
-} = require("@nomicfoundation/hardhat-network-helpers");
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
 describe("Slot", function () {
   async function CCSFixture() {
-    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
+    // Get the contract's signers
+    const [owner, authority, others] = await ethers.getSigners();
 
-    const [owner, authority, user, others] = await ethers.getSigners();
-
+    // Deploy a new instance of the `CCS` contract
     const CCS = await ethers.getContractFactory("CCS");
     const ccs = await CCS.deploy();
 
-    return { ccs, owner, authority, user, others, expirationTime };
+    // Return the contract instance and other variables as an object
+    return { ccs, owner, authority, others };
   }
 
   describe("Definition", function () {
-    it("Should successfully define a slot", async function () {
+    it("Should define a slot by the owner", async function () {
       const { ccs } = await loadFixture(CCSFixture);
 
       await ccs.slotDefine(3525, "ERC3525");
@@ -26,7 +24,7 @@ describe("Slot", function () {
       expect(await ccs.slotInfo(721)).to.equal("UNDEFINED");
     });
 
-    it("Should be reverted if called by non-owner", async function () {
+    it("Should be reverted if called by a non-owner", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       await expect(
@@ -44,7 +42,7 @@ describe("Slot", function () {
   });
 
   describe("Allocation", function () {
-    it("Should successfully allocate a slot to the corresponding authority", async function () {
+    it("Should allocate a slot to an authority", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       const name = "Authority";
@@ -62,7 +60,7 @@ describe("Slot", function () {
       expect(info.slots).to.deep.equal([3525]);
     });
 
-    it("Should be reverted if called by non-owner", async function () {
+    it("Should be reverted if called by a non-owner", async function () {
       const { ccs, authority, others } = await loadFixture(CCSFixture);
 
       const name = "Authority";
@@ -77,7 +75,7 @@ describe("Slot", function () {
       ).to.be.revertedWith("only the owner can allocate slots");
     });
 
-    it("Should be reverted if given the unregistered account", async function () {
+    it("Should be reverted if given a unregistered account", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       await ccs.slotDefine(3525, "ERC3525");
@@ -87,7 +85,7 @@ describe("Slot", function () {
       );
     });
 
-    it("Should be reverted if given the undefined slot", async function () {
+    it("Should be reverted if given a undefined slot", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       const name = "Authority";
@@ -95,9 +93,9 @@ describe("Slot", function () {
 
       await ccs.authorityRegister(authority.address, name, domain);
 
-      await expect(ccs.slotAllocate(3525, authority.address)).to.be.revertedWith(
-        "slot is never defined"
-      );
+      await expect(
+        ccs.slotAllocate(3525, authority.address)
+      ).to.be.revertedWith("slot is never defined");
     });
   });
 });

@@ -1,27 +1,21 @@
-const {
-  time,
-  loadFixture,
-} = require("@nomicfoundation/hardhat-network-helpers");
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
 describe("User", function () {
   async function CCSFixture() {
-    // Set the expiration time of the authority
-    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
-
     // Get the contract's signers
-    const [owner, authority, user, others] = await ethers.getSigners();
+    const [owner, authority, user] = await ethers.getSigners();
 
     // Deploy a new instance of the `CCS` contract
     const CCS = await ethers.getContractFactory("CCS");
     const ccs = await CCS.deploy();
 
     // Return the contract instance and other variables as an object
-    return { ccs, owner, authority, user, others, expirationTime };
+    return { ccs, owner, authority, user };
   }
 
   describe("Slot Info", function () {
-    it("Should successfully get slot info of the user", async function () {
+    it("Should get the slot info of the user", async function () {
       const { ccs, authority, user } = await loadFixture(CCSFixture);
 
       // Define some slots
@@ -93,7 +87,7 @@ describe("User", function () {
   });
 
   describe("Token Info", function () {
-    it("Should successfully get token info of the user", async function () {
+    it("Should get the token info of the user", async function () {
       const { ccs, authority, user } = await loadFixture(CCSFixture);
 
       // Define some slots

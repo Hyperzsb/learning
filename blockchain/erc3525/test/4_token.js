@@ -21,7 +21,7 @@ describe("Token", function () {
   }
 
   describe("Mintage", function () {
-    it("Should successfully mint a token", async function () {
+    it("Should mint a token by an authority", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       // Define a new slot
@@ -57,7 +57,7 @@ describe("Token", function () {
       expect(await ccs.slotOf(tokenId)).to.equal(slot);
     });
 
-    it("Should be reverted if called by non-authority", async function () {
+    it("Should be reverted if called by a non-authority", async function () {
       const { ccs, others } = await loadFixture(CCSFixture);
 
       // Define a new slot
@@ -70,7 +70,7 @@ describe("Token", function () {
       );
     });
 
-    it("Should revert when authority is not valid", async function () {
+    it("Should revert when the authority is not valid", async function () {
       // Load the fixture
       const { ccs, authority, expirationTime } = await loadFixture(CCSFixture);
 
@@ -117,7 +117,7 @@ describe("Token", function () {
   });
 
   describe("Distribution", function () {
-    it("Should successfully transfer token value to a user", async function () {
+    it("Should transfer a token value to a user", async function () {
       const { ccs, authority, user } = await loadFixture(CCSFixture);
 
       await ccs.slotDefine(3525, "ERC3525");
@@ -171,7 +171,7 @@ describe("Token", function () {
       );
     });
 
-    it("Should be reverted if called by non-authority", async function () {
+    it("Should be reverted if called by a non-authority", async function () {
       const { ccs, authority, user, others } = await loadFixture(CCSFixture);
 
       await ccs.slotDefine(3525, "ERC3525");

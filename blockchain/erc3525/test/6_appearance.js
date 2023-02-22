@@ -1,14 +1,7 @@
-const {
-  time,
-  loadFixture,
-} = require("@nomicfoundation/hardhat-network-helpers");
-const { expect } = require("chai");
+const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 
 describe("Appearance", function () {
   async function CCSFixture() {
-    // Set the expiration time of the authority
-    const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
-
     // Get the contract's signers
     const [owner, authority, user, others] = await ethers.getSigners();
 
@@ -17,11 +10,11 @@ describe("Appearance", function () {
     const ccs = await CCS.deploy();
 
     // Return the contract instance and other variables as an object
-    return { ccs, owner, authority, user, others, expirationTime };
+    return { ccs, owner, authority, user };
   }
 
   describe("Contract URI", function () {
-    it("Should successfully generate the URI of the contract", async function () {
+    it("Should generate the URI of the contract", async function () {
       const { ccs } = await loadFixture(CCSFixture);
 
       const contractURI = await ccs.contractURI();
@@ -35,7 +28,7 @@ describe("Appearance", function () {
   });
 
   describe("Slot URI", function () {
-    it("Should successfully generate the URI of the slot", async function () {
+    it("Should generate the URI of the slot", async function () {
       const { ccs } = await loadFixture(CCSFixture);
 
       await ccs.slotDefine(3525, "ERC3525");
@@ -50,7 +43,7 @@ describe("Appearance", function () {
   });
 
   describe("Token URI", function () {
-    it("Should successfully generate the URI of the token owned by the authority", async function () {
+    it("Should generate the URI of the token owned by the authority", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       // Define a new slot
@@ -76,12 +69,16 @@ describe("Appearance", function () {
       const tokenURI = await ccs.tokenURI(tokenId);
 
       const fs = require("fs");
-      fs.writeFile("./build/assets/authorityToken.svg", tokenURI, function (err) {
-        if (err) throw err;
-      });
+      fs.writeFile(
+        "./build/assets/authorityToken.svg",
+        tokenURI,
+        function (err) {
+          if (err) throw err;
+        }
+      );
     });
 
-    it("Should successfully generate the URI of the token owned by the user", async function () {
+    it("Should generate the URI of the token owned by the user", async function () {
       const { ccs, authority, user } = await loadFixture(CCSFixture);
 
       await ccs.slotDefine(3525, "ERC3525");

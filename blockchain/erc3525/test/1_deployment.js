@@ -12,7 +12,7 @@ describe("Deployment", function () {
   }
 
   describe("Deployment", function () {
-    it("Should set the correct owner", async function () {
+    it("Should set the correct owner to the contract", async function () {
       const { ccs, owner } = await loadFixture(CCSFixture);
 
       expect(await ccs.owner()).to.equal(owner.address);
