@@ -93,47 +93,56 @@ contract CCSBase is ERC3525 {
      *  - Renewal
      */
 
+    uint256 public expirationTime = 365 * 24 * 60 * 60;
+
     struct Authority {
         string name;
         string domain;
-        /// @dev Timestamp of the last time authority register or renew its ownership of the corresponding domain
-        uint256 lastCheck;
         /// @dev Slots where the authority can mint corresponding tokens
         uint256[] slots;
+        /// @dev Status indicating whether the authority passes the registration process
+        bool registered;
+        /// @dev Status indicating whether the authority passes the renewal process
+        bool renewed;
+        /// @dev Timestamp of the last time authority register or renew its ownership of the corresponding domain
+        uint256 lastCheck;
     }
 
     mapping(address => Authority) internal authorities;
 
-    uint256 public expirationTime = 365 * 24 * 60 * 60;
-
     /**
-     * @notice Registers a new authority with the given account, name, and domain
-     * @param _account The address of the authority being registered
-     * @param _name The name of the authority being registered
-     * @param _domain The domain of the authority being registered
-     * @dev This function is currently restricted to be called only by the contract owner
-     * @dev Add verification procedures using oracles to validate the ownership of the domain
+     * @notice Changes the expiration time of the authorities' validity
+     * @param _expirationTime The new expiration time, in seconds
+     * @dev Only the contract owner is allowed to change the expiration time
+     * @dev The expiration time must be within a reasonable range, i.e., between 1 day and 3 years
      */
-    function authorityRegister(
-        address _account,
-        string memory _name,
-        string memory _domain
-    ) external payable {
-        require(msg.sender == owner, "only the owner can register authorities");
+    function changeExpirationTime(uint256 _expirationTime) external {
         require(
-            bytes(_name).length > 0 && bytes(_domain).length > 0,
-            "empty authority name or domain"
+            msg.sender == owner,
+            "only the owner can change the expiration time"
+        );
+        require(
+            _expirationTime >= 24 * 60 * 60 &&
+                _expirationTime <= 3 * 365 * 24 * 60 * 60,
+            "expiration time should be reasonable"
         );
 
-        // TODO: Add verification procedures using oracles to validate the ownership of the domain
-
-        authorities[_account] = Authority({
-            name: _name,
-            domain: _domain,
-            lastCheck: block.timestamp,
-            slots: new uint256[](0)
-        });
+        expirationTime = _expirationTime;
     }
+
+    function authorityRegistrationRequest(
+        string memory _name,
+        string memory _domain
+    ) external payable virtual {}
+
+    function authorityRegistrationRetrieve()
+        external
+        view
+        virtual
+        returns (string memory)
+    {}
+
+    function authorityRegistrationConfirm() external payable virtual {}
 
     /**
      * @notice Checks whether the given account is registered as an authority
@@ -141,7 +150,7 @@ contract CCSBase is ERC3525 {
      * @return True if the account is registered as an authority, false otherwise
      */
     function isAuthority(address _account) public view returns (bool) {
-        if (authorities[_account].lastCheck == 0) {
+        if (authorities[_account].registered) {
             return false;
         } else {
             return true;
@@ -181,41 +190,14 @@ contract CCSBase is ERC3525 {
         return authorities[_account];
     }
 
-    /**
-     * @notice Renews the registration of the authority associated with the given account
-     * @param _account The address of the authority to renew
-     * @dev The function is currently restricted to be called only by the contract owner
-     * @dev The function requires the given account to be registered as an authority and for the authority to be expired
-     * @dev Add verification procedures using oracles to validate the ownership of the domain
-     */
-    function authorityRenew(address _account) external payable {
-        /// @notice This "owner-only" restriction is only temporary for simplicity
-        require(msg.sender == owner, "only the owner can renew authorities");
-        require(isAuthority(_account), "authority is never registered");
-        require(!isAuthorityValid(_account), "authority is still valid");
+    function authorityRenewalRequest() external payable virtual {}
 
-        // TODO: Add verification procedures using oracles to validate the ownership of the domain
+    function authorityRenewalRetrieve()
+        external
+        view
+        virtual
+        returns (string memory)
+    {}
 
-        authorities[_account].lastCheck = block.timestamp;
-    }
-
-    /**
-     * @notice Changes the expiration time of the authorities' validity
-     * @param _expirationTime The new expiration time, in seconds
-     * @dev Only the contract owner is allowed to change the expiration time
-     * @dev The expiration time must be within a reasonable range, i.e., between 1 day and 3 years
-     */
-    function changeExpirationTime(uint256 _expirationTime) external {
-        require(
-            msg.sender == owner,
-            "only the owner can change the expiration time"
-        );
-        require(
-            _expirationTime >= 24 * 60 * 60 &&
-                _expirationTime <= 3 * 365 * 24 * 60 * 60,
-            "expiration time should be reasonable"
-        );
-
-        expirationTime = _expirationTime;
-    }
+    function authorityRenewalConfirm() external payable virtual {}
 }

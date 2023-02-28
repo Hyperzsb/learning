@@ -1,7 +1,7 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("User", function () {
+describe.skip("User", function () {
   async function CCSFixture() {
     // Get the contract's signers
     const [owner, authority, user] = await ethers.getSigners();

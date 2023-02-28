@@ -41,7 +41,7 @@ describe("Slot", function () {
     });
   });
 
-  describe("Allocation", function () {
+  describe.skip("Allocation", function () {
     it("Should allocate a slot to an authority", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 

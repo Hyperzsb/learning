@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.17;
 
-import "./CCSBase.sol";
+import "./CCSAuthorityRR.sol";
 
-contract CCSToken is CCSBase {
-  
+contract CCSToken is CCSAuthorityRR {
     /**
      * @notice This part is for token-related features, including
      *  - Mintage

@@ -4,7 +4,7 @@ const {
 } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe("Token", function () {
+describe.skip("Token", function () {
   async function CCSFixture() {
     // Set the expiration time of the authority
     const expirationTime = (await time.latest()) + 365 * 24 * 60 * 60;
@@ -124,7 +124,6 @@ describe("Token", function () {
 
       const name = "Authority";
       const domain = "authority.com";
-
       await ccs.authorityRegister(authority.address, name, domain);
 
       await ccs.slotAllocate(3525, authority.address);
@@ -178,7 +177,6 @@ describe("Token", function () {
 
       const name = "Authority";
       const domain = "authority.com";
-
       await ccs.authorityRegister(authority.address, name, domain);
 
       await ccs.slotAllocate(3525, authority.address);

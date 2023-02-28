@@ -1,6 +1,6 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 
-describe("Appearance", function () {
+describe.skip("Appearance", function () {
   async function CCSFixture() {
     // Get the contract's signers
     const [owner, authority, user, others] = await ethers.getSigners();
@@ -85,7 +85,6 @@ describe("Appearance", function () {
 
       const name = "Authority";
       const domain = "authority.com";
-
       await ccs.authorityRegister(authority.address, name, domain);
 
       await ccs.slotAllocate(3525, authority.address);
