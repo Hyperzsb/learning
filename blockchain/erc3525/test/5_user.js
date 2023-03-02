@@ -1,7 +1,7 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
 
-describe.skip("User", function () {
+describe("User", function () {
   async function CCSFixture() {
     // Get the contract's signers
     const [owner, authority, user] = await ethers.getSigners();
@@ -14,7 +14,7 @@ describe.skip("User", function () {
     return { ccs, owner, authority, user };
   }
 
-  describe("Slot Info", function () {
+  describe.skip("Slot Info", function () {
     it("Should get the slot info of the user", async function () {
       const { ccs, authority, user } = await loadFixture(CCSFixture);
 

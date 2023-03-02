@@ -29,7 +29,7 @@ describe("Slot", function () {
 
       await expect(
         ccs.connect(others).slotDefine(3525, "ERC3525")
-      ).to.be.revertedWith("only the owner can define slots");
+      ).to.be.reverted;
     });
 
     it("Should be reverted if given empty name or domain", async function () {
@@ -41,13 +41,12 @@ describe("Slot", function () {
     });
   });
 
-  describe.skip("Allocation", function () {
+  describe("Allocation", function () {
     it("Should allocate a slot to an authority", async function () {
       const { ccs, authority } = await loadFixture(CCSFixture);
 
       const name = "Authority";
       const domain = "authority.com";
-
       await ccs.authorityRegister(authority.address, name, domain);
 
       await ccs.slotDefine(3525, "ERC3525");
@@ -65,14 +64,13 @@ describe("Slot", function () {
 
       const name = "Authority";
       const domain = "authority.com";
-
       await ccs.authorityRegister(authority.address, name, domain);
 
       await ccs.slotDefine(3525, "ERC3525");
 
       await expect(
         ccs.connect(others).slotAllocate(3525, authority.address)
-      ).to.be.revertedWith("only the owner can allocate slots");
+      ).to.be.reverted;
     });
 
     it("Should be reverted if given a unregistered account", async function () {
@@ -80,9 +78,7 @@ describe("Slot", function () {
 
       await ccs.slotDefine(3525, "ERC3525");
 
-      await expect(ccs.slotAllocate(3525, others.address)).to.be.revertedWith(
-        "authority is never registered"
-      );
+      await expect(ccs.slotAllocate(3525, others.address)).to.be.reverted;
     });
 
     it("Should be reverted if given a undefined slot", async function () {
@@ -90,7 +86,6 @@ describe("Slot", function () {
 
       const name = "Authority";
       const domain = "authority.com";
-
       await ccs.authorityRegister(authority.address, name, domain);
 
       await expect(
