@@ -22,9 +22,10 @@ contract CCSToken is CCSAuthorityRR {
      * @dev The authority must be registered and valid
      * @dev The slot must be allocated to the calling authority
      */
-    function mint(uint256 _slot, uint256 _value) external returns (uint256) {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
+    function mint(
+        uint256 _slot,
+        uint256 _value
+    ) external onlyValidAuthority(msg.sender) returns (uint256) {
         require(
             isSlotAllocatedTo(_slot, msg.sender),
             "slot is not allocated to authority"
@@ -52,10 +53,7 @@ contract CCSToken is CCSAuthorityRR {
         uint256 _tokenId,
         address _to,
         uint256 _value
-    ) public payable virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public payable virtual override onlyValidAuthority(msg.sender) {
         super.approve(_tokenId, _to, _value);
     }
 
@@ -69,10 +67,7 @@ contract CCSToken is CCSAuthorityRR {
     function approve(
         address _to,
         uint256 _tokenId
-    ) public payable virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public payable virtual override onlyValidAuthority(msg.sender) {
         super.approve(_to, _tokenId);
     }
 
@@ -85,10 +80,14 @@ contract CCSToken is CCSAuthorityRR {
      */
     function getApproved(
         uint256 _tokenId
-    ) public view virtual override returns (address) {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    )
+        public
+        view
+        virtual
+        override
+        onlyValidAuthority(msg.sender)
+        returns (address)
+    {
         return super.getApproved(_tokenId);
     }
 
@@ -102,10 +101,7 @@ contract CCSToken is CCSAuthorityRR {
     function setApprovalForAll(
         address _operator,
         bool _approved
-    ) public virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public virtual override onlyValidAuthority(msg.sender) {
         super.setApprovalForAll(_operator, _approved);
     }
 
@@ -120,10 +116,14 @@ contract CCSToken is CCSAuthorityRR {
     function isApprovedForAll(
         address _owner,
         address _operator
-    ) public view virtual override returns (bool) {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    )
+        public
+        view
+        virtual
+        override
+        onlyValidAuthority(msg.sender)
+        returns (bool)
+    {
         return super.isApprovedForAll(_owner, _operator);
     }
 
@@ -138,10 +138,14 @@ contract CCSToken is CCSAuthorityRR {
     function allowance(
         uint256 _tokenId,
         address _operator
-    ) public view virtual override returns (uint256) {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    )
+        public
+        view
+        virtual
+        override
+        onlyValidAuthority(msg.sender)
+        returns (uint256)
+    {
         return super.allowance(_tokenId, _operator);
     }
 
@@ -158,10 +162,14 @@ contract CCSToken is CCSAuthorityRR {
         uint256 _fromTokenId,
         address _to,
         uint256 _value
-    ) public payable virtual override returns (uint256) {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    )
+        public
+        payable
+        virtual
+        override
+        onlyValidAuthority(msg.sender)
+        returns (uint256)
+    {
         uint256 tokenId = super.transferFrom(_fromTokenId, _to, _value);
         tokenFrom[tokenId] = msg.sender;
 
@@ -180,10 +188,7 @@ contract CCSToken is CCSAuthorityRR {
         uint256 _fromTokenId,
         uint256 _toTokenId,
         uint256 _value
-    ) public payable virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public payable virtual override onlyValidAuthority(msg.sender) {
         tokenFrom[_toTokenId] = msg.sender;
 
         super.transferFrom(_fromTokenId, _toTokenId, _value);
@@ -201,10 +206,7 @@ contract CCSToken is CCSAuthorityRR {
         address _from,
         address _to,
         uint256 _tokenId
-    ) public payable virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public payable virtual override onlyValidAuthority(msg.sender) {
         tokenFrom[_tokenId] = msg.sender;
 
         super.transferFrom(_from, _to, _tokenId);
@@ -224,10 +226,7 @@ contract CCSToken is CCSAuthorityRR {
         address _to,
         uint256 _tokenId,
         bytes memory _data
-    ) public payable virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public payable virtual override onlyValidAuthority(msg.sender) {
         tokenFrom[_tokenId] = msg.sender;
 
         super.safeTransferFrom(_from, _to, _tokenId, _data);
@@ -245,10 +244,7 @@ contract CCSToken is CCSAuthorityRR {
         address _from,
         address _to,
         uint256 _tokenId
-    ) public payable virtual override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(isAuthorityValid(msg.sender), "authority is not valid");
-
+    ) public payable virtual override onlyValidAuthority(msg.sender) {
         tokenFrom[_tokenId] = msg.sender;
 
         super.safeTransferFrom(_from, _to, _tokenId);

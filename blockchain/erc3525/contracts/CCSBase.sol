@@ -11,6 +11,59 @@ contract CCSBase is ERC3525 {
     }
 
     /**
+     * @dev This part is for global modifiers, including
+     *  - onlyOwner
+     *  - onlyAuthority
+     *  - onlyNonAuthority
+     *  - onlyValidAuthority
+     *  - onlyInvalidAuthority
+     */
+
+    /**
+     * @dev Modifier that only allows the owner of the contract to call the function.
+     */
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    /**
+     * @dev Modifier that only allows authority to call the function, or to be called by the function.
+     * @param _account The address to check.
+     */
+    modifier onlyAuthority(address _account) {
+        require(isAuthority(_account));
+        _;
+    }
+
+    /**
+     * @dev Modifier that only allows non-authority to call the function, or to be called by the function.
+     * @param _account The address to check.
+     */
+    modifier onlyNonAuthority(address _account) {
+        require(!isAuthority(_account));
+        _;
+    }
+
+    /**
+     * @dev Modifier that only allows valid authority to call the function, or to be called by the function.
+     * @param _account The address to check.
+     */
+    modifier onlyValidAuthority(address _account) {
+        require(isAuthorityValid(_account));
+        _;
+    }
+
+    /**
+     * @dev Modifier that only allows invalid authority to call the function, or to be called by the function.
+     * @param _account The address to check.
+     */
+    modifier onlyInvalidAuthority(address _account) {
+        require(!isAuthorityValid(_account));
+        _;
+    }
+
+    /**
      * @notice This part is for slot-related features, including
      *  - Definition
      *  - Allocation
@@ -25,8 +78,7 @@ contract CCSBase is ERC3525 {
      * @dev Only the contract owner can define slot names
      * @dev The slot name must not be an empty string
      */
-    function slotDefine(uint256 _slot, string memory _name) external {
-        require(msg.sender == owner, "only the owner can define slots");
+    function slotDefine(uint256 _slot, string memory _name) external onlyOwner {
         require(bytes(_name).length > 0, "empty slot name");
 
         slots[_slot] = _name;
@@ -54,9 +106,10 @@ contract CCSBase is ERC3525 {
      * @dev The authority must be registered
      * @dev The slot must be defined before it can be allocated
      */
-    function slotAllocate(uint256 _slot, address _account) external {
-        require(msg.sender == owner, "only the owner can allocate slots");
-        require(isAuthority(_account), "authority is never registered");
+    function slotAllocate(
+        uint256 _slot,
+        address _account
+    ) external onlyOwner onlyAuthority(_account) {
         require(bytes(slots[_slot]).length > 0, "slot is never defined");
 
         authorities[_account].slots.push(_slot);
@@ -73,9 +126,8 @@ contract CCSBase is ERC3525 {
     function isSlotAllocatedTo(
         uint256 _slot,
         address _account
-    ) public view returns (bool) {
+    ) public view onlyAuthority(_account) returns (bool) {
         require(bytes(slots[_slot]).length > 0, "slot is never defined");
-        require(isAuthority(_account), "authority is never registered");
 
         for (uint256 i = 0; i < authorities[_account].slots.length; i++) {
             if (authorities[_account].slots[i] == _slot) {
@@ -116,11 +168,7 @@ contract CCSBase is ERC3525 {
      * @dev Only the contract owner is allowed to change the expiration time
      * @dev The expiration time must be within a reasonable range, i.e., between 1 day and 3 years
      */
-    function changeExpirationTime(uint256 _expirationTime) external {
-        require(
-            msg.sender == owner,
-            "only the owner can change the expiration time"
-        );
+    function changeExpirationTime(uint256 _expirationTime) external onlyOwner {
         require(
             _expirationTime >= 24 * 60 * 60 &&
                 _expirationTime <= 3 * 365 * 24 * 60 * 60,
@@ -131,16 +179,39 @@ contract CCSBase is ERC3525 {
     }
 
     /**
+     * @notice Registers a new authority with the given account, name, and domain
+     * @param _account The address of the authority being registered
+     * @param _name The name of the authority being registered
+     * @param _domain The domain of the authority being registered
+     * @dev This function is currently restricted to be called only by the contract owner
+     */
+    function authorityRegister(
+        address _account,
+        string memory _name,
+        string memory _domain
+    ) external payable onlyOwner {
+        require(
+            bytes(_name).length > 0 && bytes(_domain).length > 0,
+            "empty authority name or domain"
+        );
+
+        authorities[_account] = Authority({
+            name: _name,
+            domain: _domain,
+            slots: new uint256[](0),
+            registered: true,
+            renewed: true,
+            lastCheck: block.timestamp
+        });
+    }
+
+    /**
      * @notice Checks whether the given account is registered as an authority
      * @param _account The address to check
      * @return True if the account is registered as an authority, false otherwise
      */
     function isAuthority(address _account) public view returns (bool) {
-        if (authorities[_account].registered) {
-            return false;
-        } else {
-            return true;
-        }
+        return authorities[_account].registered;
     }
 
     /**
@@ -150,16 +221,22 @@ contract CCSBase is ERC3525 {
      * @dev The function requires the given account to be registered as an authority
      * @dev The authority is considered valid if its last check timestamp plus the expiration time is greater than the current block timestamp
      */
-    function isAuthorityValid(address _account) public view returns (bool) {
-        require(isAuthority(_account), "authority is never registered");
+    function isAuthorityValid(
+        address _account
+    ) public view onlyAuthority(_account) returns (bool) {
+        return  authorities[_account].lastCheck + expirationTime > block.timestamp;
+    }
 
-        if (
-            authorities[_account].lastCheck + expirationTime < block.timestamp
-        ) {
-            return false;
-        } else {
-            return true;
-        }
+    /**
+     * @notice Renews the registration of the authority associated with the given account
+     * @param _account The address of the authority to renew
+     * @dev The function is currently restricted to be called only by the contract owner
+     * @dev The function requires the given account to be registered as an authority and for the authority to be expired
+     */
+    function authorityRenew(
+        address _account
+    ) external payable onlyOwner onlyInvalidAuthority(_account) {
+        authorities[_account].lastCheck = block.timestamp;
     }
 
     /**
@@ -170,9 +247,7 @@ contract CCSBase is ERC3525 {
      */
     function authorityInfo(
         address _account
-    ) public view returns (Authority memory) {
-        require(isAuthority(_account), "authority is never registered");
-
+    ) public view onlyAuthority(_account) returns (Authority memory) {
         return authorities[_account];
     }
 }

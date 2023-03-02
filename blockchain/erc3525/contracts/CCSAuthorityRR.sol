@@ -85,11 +85,17 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
     mapping(address => bytes32) private apiAToR;
     mapping(address => string) private targetDNSRecords;
 
+    /**
+     * @dev Sends a authority registration request for the sender
+     * @param _name The name of the new authority
+     * @param _domain The domain of the new authority
+     * @dev Requires that the sender is not a registered authority
+     * @dev Requires that the sender does not have a pending registration request
+     */
     function authorityRegistrationRequest(
         string memory _name,
         string memory _domain
-    ) external payable {
-        require(!isAuthority(msg.sender));
+    ) external payable onlyNonAuthority(msg.sender) {
         require(vrfAToR[msg.sender] == 0);
 
         authorities[msg.sender] = Authority({
@@ -113,20 +119,36 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         vrfAToR[msg.sender] = requestId;
     }
 
+    /**
+     * @dev Retrieves the random string for registration of the new authority
+     * @return A random string generated using Chainlink VRF
+     * @dev Requires that the sender is not a registered authority
+     * @dev Requires that the random string for this new authority is already generated and stored
+     */
     function authorityRegistrationRetrieve()
         external
         view
+        onlyNonAuthority(msg.sender)
         returns (string memory)
     {
-        require(!isAuthority(msg.sender));
         require(vrfAToR[msg.sender] > 0);
         require(bytes(originalRandomStrings[msg.sender]).length > 0);
 
         return originalRandomStrings[msg.sender];
     }
 
-    function authorityRegistrationVerify() external payable {
-        require(!isAuthority(msg.sender));
+    /**
+     * @dev Verifies (retrieves) the DNS record of domain of the new authority.
+     * @dev Sends an API request to verify (retrieves) the DNS record for the authority's domain
+     * @dev Requires that the sender is not a registered authority
+     * @dev Requires that the random string for this new authority is already generated and stored
+     * @dev Requires that the sender does not have a pending registration verification
+     */
+    function authorityRegistrationVerify()
+        external
+        payable
+        onlyNonAuthority(msg.sender)
+    {
         require(vrfAToR[msg.sender] > 0);
         require(bytes(originalRandomStrings[msg.sender]).length > 0);
         require(apiAToR[msg.sender] == 0);
@@ -134,8 +156,20 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         getDNSRecord(msg.sender);
     }
 
-    function authorityRegistrationConfirm() external payable {
-        require(!isAuthority(msg.sender));
+    /**
+     * @dev Confirms the registration request for the calling authority
+     * @dev Deletes the registration request and API request data from storage
+     * @dev Updates the calling authority's info
+     * @dev Requires that the sender is not a registered authority
+     * @dev Requires that the random string for this new authority is already generated and stored
+     * @dev Requires that the DNS record for this new authority is already retrieved and stored
+     * @dev Requires that the sender's target DNS record matches the original random string
+     */
+    function authorityRegistrationConfirm()
+        external
+        payable
+        onlyNonAuthority(msg.sender)
+    {
         require(vrfAToR[msg.sender] > 0);
         require(bytes(originalRandomStrings[msg.sender]).length > 0);
         require(bytes(targetDNSRecords[msg.sender]).length > 0);
@@ -157,9 +191,16 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         authorities[msg.sender].registered = true;
     }
 
-    function authorityRenewalRequest() external payable {
-        require(isAuthority(msg.sender));
-        require(!isAuthorityValid(msg.sender));
+    /**
+     * @dev Sends a renewal request for the calling authority
+     * @dev Requires that the sender is not a valid authority
+     * @dev Requires that the sender does not have a pending renewal request
+     */
+    function authorityRenewalRequest()
+        external
+        payable
+        onlyInvalidAuthority(msg.sender)
+    {
         require(vrfAToR[msg.sender] == 0);
 
         authorities[msg.sender].renewed = false;
@@ -176,18 +217,36 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         vrfAToR[msg.sender] = requestId;
     }
 
-    function authorityRenewalRetrieve() external view returns (string memory) {
-        require(isAuthority(msg.sender));
-        require(!isAuthorityValid(msg.sender));
+    /**
+     * @dev Retrieves the random string for registration of the authority
+     * @return A random string generated using Chainlink VRF
+     * @dev Requires that the sender is not a valid authority
+     * @dev Requires that the random string for this authority is already generated and stored
+     */
+    function authorityRenewalRetrieve()
+        external
+        view
+        onlyInvalidAuthority(msg.sender)
+        returns (string memory)
+    {
         require(!authorities[msg.sender].renewed && vrfAToR[msg.sender] > 0);
         require(bytes(originalRandomStrings[msg.sender]).length > 0);
 
         return originalRandomStrings[msg.sender];
     }
 
-    function authorityRenewalVerify() external payable {
-        require(isAuthority(msg.sender));
-        require(!isAuthorityValid(msg.sender));
+    /**
+     * @dev Verifies (retrieves) the DNS record of domain of the authority.
+     * @dev Sends an API request to verify (retrieves) the DNS record for the authority's domain
+     * @dev Requires that the sender is not a valid authority
+     * @dev Requires that the random string for this authority is already generated and stored
+     * @dev Requires that the sender does not have a pending renewal verification
+     */
+    function authorityRenewalVerify()
+        external
+        payable
+        onlyInvalidAuthority(msg.sender)
+    {
         require(!authorities[msg.sender].renewed && vrfAToR[msg.sender] > 0);
         require(bytes(originalRandomStrings[msg.sender]).length > 0);
         require(apiAToR[msg.sender] == 0);
@@ -195,9 +254,20 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         getDNSRecord(msg.sender);
     }
 
-    function authorityRenewalConfirm() external payable {
-        require(isAuthority(msg.sender));
-        require(!isAuthorityValid(msg.sender));
+    /**
+     * @dev Confirms the registration request for the calling authority
+     * @dev Deletes the registration request and API request data from storage
+     * @dev Updates the calling authority's info
+     * @dev Requires that the sender is not a valid authority
+     * @dev Requires that the random string for this authority is already generated and stored
+     * @dev Requires that the DNS record for this authority is already retrieved and stored
+     * @dev Requires that the sender's target DNS record matches the original random string
+     */
+    function authorityRenewalConfirm()
+        external
+        payable
+        onlyInvalidAuthority(msg.sender)
+    {
         require(!authorities[msg.sender].renewed && vrfAToR[msg.sender] > 0);
         require(bytes(originalRandomStrings[msg.sender]).length > 0);
         require(bytes(targetDNSRecords[msg.sender]).length > 0);
@@ -218,6 +288,10 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         authorities[msg.sender].lastCheck = block.timestamp;
     }
 
+    /**
+     * @dev Sends an API call to retrieve the DNS record for the specified authority using Chainlink API service
+     * @param _account The address of the authority to retrieve the DNS record for.
+     */
     function getDNSRecord(address _account) private {
         Chainlink.Request memory request = buildChainlinkRequest(
             apiConfig.jobId,
@@ -245,6 +319,9 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         apiAToR[_account] = requestId;
     }
 
+    /**
+     * @dev Fulfill function used by Chainlink VRF
+     */
     function fulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords
@@ -252,6 +329,9 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         originalRandomStrings[vrfRToA[_requestId]] = _randomWords[0].toString();
     }
 
+    /**
+     * @dev Fulfill function used by Chainlink API service
+     */
     function fulfillAPICalls(
         bytes32 _requestId,
         string memory _record
@@ -259,6 +339,10 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         targetDNSRecords[apiRToA[_requestId]] = _record;
     }
 
+    /**
+     * @dev Withdraws the LINK tokens held by the contract and transfers them to the contract owner.
+     * @dev Requires that the caller is the contract owner.
+     */
     function withdrawLink() public {
         require(msg.sender == owner);
 
