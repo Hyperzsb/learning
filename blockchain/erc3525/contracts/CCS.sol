@@ -18,7 +18,9 @@ contract CCS is CCSToken {
      * @dev Returns an array of all the unique slots in which the specified address has some tokens
      * @param _account The address to query.
      * @return An array of uint256 values representing the unique slots in which the specified address has some tokens
+     * @dev As this feature can be implemented by the frontend app, this function is disabled for smaller contract size
      */
+    /*
     function slotsOf(address _account) public view returns (uint256[] memory) {
         uint256 balance = balanceOf(_account);
         uint256[] memory allSlots = new uint256[](balance);
@@ -60,6 +62,7 @@ contract CCS is CCSToken {
 
         return uniqueSlots;
     }
+    */
 
     /**
      * @dev Returns an array of all the tokens owned by the specified address
