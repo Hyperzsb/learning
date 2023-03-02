@@ -84,20 +84,7 @@ contract CCS is CCSToken {
      *  - Token URI
      */
 
-    /**
-     * @dev Returns the URI for this contract, which provides metadata about the contract itself.
-     * @return A string representing the URI for this contract.
-     */
-    function contractURI()
-        public
-        view
-        virtual
-        override
-        returns (string memory)
-    {
-        return
-            string(
-                abi.encodePacked(
+    string private uriPrefix = 
                     '<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">'
                     '  <foreignObject width="100%" height="100%">'
                     '    <div xmlns="http://www.w3.org/1999/xhtml">'
@@ -114,7 +101,28 @@ contract CCS is CCSToken {
                     "          text-align: center;"
                     "        }"
                     "      </style>"
-                    '      <div class="container">'
+                    '      <div class="container">';
+    string private uriSuffix = 
+                    "      </div>"
+                    "    </div>"
+                    "  </foreignObject>"
+                    "</svg>";
+
+    /**
+     * @dev Returns the URI for this contract, which provides metadata about the contract itself.
+     * @return A string representing the URI for this contract.
+     */
+    function contractURI()
+        public
+        view
+        virtual
+        override
+        returns (string memory)
+    {
+        return
+            string(
+                abi.encodePacked(
+                    uriPrefix,
                     "        <h1>Community Credit System (CCS)</h1>"
                     "        <p>This contract is used to provide credit and reputation services to users in the community based on ERC3525 Semi-Fungible Token standard.</p>"
                     "        <p><b>Address: </b>",
@@ -122,11 +130,8 @@ contract CCS is CCSToken {
                     "</p>"
                     "        <p><b>Owner: </b>",
                     address(owner).toHexString(),
-                    "</p>"
-                    "      </div>"
-                    "    </div>"
-                    "  </foreignObject>"
-                    "</svg>"
+                    "</p>",
+                    uriSuffix
                 )
             );
     }
@@ -142,34 +147,15 @@ contract CCS is CCSToken {
         return
             string(
                 abi.encodePacked(
-                    '<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">'
-                    '  <foreignObject width="100%" height="100%">'
-                    '    <div xmlns="http://www.w3.org/1999/xhtml">'
-                    "      <style>"
-                    "        .container {"
-                    "          width: 600px;"
-                    "          height: 600px;"
-                    "          display: flex;"
-                    "          flex-direction: column;"
-                    "          justify-content: center;"
-                    "          align-items: center;"
-                    "          background-color: white;"
-                    "          color: black;"
-                    "          text-align: center;"
-                    "        }"
-                    "      </style>"
-                    '      <div class="container">'
+                    uriPrefix,
                     "        <h1>CCS - Slot</h1>"
                     "        <p><b>ID: </b>",
                     _slot.toString(),
                     "</p>"
                     "        <p><b>Name: </b>",
                     slotInfo(_slot),
-                    "</p>"
-                    "      </div>"
-                    "    </div>"
-                    "  </foreignObject>"
-                    "</svg>"
+                    "</p>",
+                    uriSuffix
                 )
             );
     }
@@ -185,23 +171,7 @@ contract CCS is CCSToken {
         return
             string(
                 abi.encodePacked(
-                    '<svg fill="none" viewBox="0 0 600 600" width="600" height="600" xmlns="http://www.w3.org/2000/svg">'
-                    '  <foreignObject width="100%" height="100%">'
-                    '    <div xmlns="http://www.w3.org/1999/xhtml">'
-                    "      <style>"
-                    "        .container {"
-                    "          width: 600px;"
-                    "          height: 600px;"
-                    "          display: flex;"
-                    "          flex-direction: column;"
-                    "          justify-content: center;"
-                    "          align-items: center;"
-                    "          background-color: white;"
-                    "          color: black;"
-                    "          text-align: center;"
-                    "        }"
-                    "      </style>"
-                    '      <div class="container">'
+                    uriPrefix,
                     "        <h1>CCS - Token</h1>"
                     "        <p><b>ID: </b>",
                     _tokenId.toString(),
@@ -214,11 +184,8 @@ contract CCS is CCSToken {
                     "</p>"
                     "        <p><b>Credit: </b>",
                     balanceOf(_tokenId).toString(),
-                    "</p>"
-                    "      </div>"
-                    "    </div>"
-                    "  </foreignObject>"
-                    "</svg>"
+                    "</p>",
+                    uriSuffix
                 )
             );
     }
