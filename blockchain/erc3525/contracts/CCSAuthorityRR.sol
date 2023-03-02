@@ -4,10 +4,12 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/ChainlinkClient.sol";
 import "./CCSBase.sol";
 
-contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2 {
+contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
     using Strings for uint256;
+    using Chainlink for Chainlink.Request;
 
     VRFCoordinatorV2Interface private VRFCOORDINATOR;
 
@@ -21,7 +23,12 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2 {
         uint32 numWords;
     }
 
-    /// @dev Currently using hardcode for simplicity
+    /**
+     * @dev This struct stores configs for using Chainlink VRF service
+     * @dev Currently using hardcode for simplicity
+     * @dev This config is only valid on Goerli testnet.
+     * @dev For configs of other testnets or mainnet, please refer to https://docs.chain.link/vrf/v2/subscription/supported-networks
+     */
     VRFConfig private vrfConfig =
         VRFConfig({
             coordinator: 0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D,
@@ -33,23 +40,57 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2 {
             numWords: 1
         });
 
-    constructor() VRFConsumerBaseV2(vrfConfig.coordinator) {
-        VRFCOORDINATOR = VRFCoordinatorV2Interface(vrfConfig.coordinator);
+    function changeSubscriptionId(uint64 _subscriptionId) external {
+        require(msg.sender == owner);
+
+        vrfConfig.subscriptionId = _subscriptionId;
     }
 
-    mapping(uint256 => address) private requestToAddress;
-    mapping(address => uint256) private addressToRequest;
-    mapping(address => string) private randomStrings;
+    struct APIConfig {
+        address oracle;
+        address link;
+        bytes32 jobId;
+        uint256 fee;
+    }
+
+    /**
+     * @dev This struct stores configs for using Chainlink API call service
+     * @dev Currently using hardcode for simplicity
+     * @dev This config is only valid on Goerli testnet
+     * @dev For configs of other testnets or mainnet, please refer to https://docs.chain.link/any-api/testnet-oracles
+     */
+    APIConfig private apiConfig =
+        APIConfig({
+            oracle: 0xCC79157eb46F5624204f47AB42b3906cAA40eaB7,
+            link: 0x326C977E6efc84E512bB9C30f76E30c160eD06FB,
+            jobId: "7d80a6386ef543a3abb52817f6707e3b",
+            fee: (1 * LINK_DIVISIBILITY) / 10
+        });
+
+    constructor() VRFConsumerBaseV2(vrfConfig.coordinator) {
+        /// @dev This is for VRF service initialization
+        /// @dev For more details, please refer to https://docs.chain.link/vrf/v2/subscription/examples/get-a-random-number
+        VRFCOORDINATOR = VRFCoordinatorV2Interface(vrfConfig.coordinator);
+        /// @dev This is for API call service initialization
+        /// @dev For more details, please refer to https://docs.chain.link/any-api/get-request/examples/array-response
+        setChainlinkToken(apiConfig.link);
+        setChainlinkOracle(apiConfig.oracle);
+    }
+
+    mapping(uint256 => address) private vrfRToA;
+    mapping(address => uint256) private vrfAToR;
+    mapping(address => string) private originalRandomStrings;
+
+    mapping(bytes32 => address) private apiRToA;
+    mapping(address => bytes32) private apiAToR;
+    mapping(address => string) private targetDNSRecords;
 
     function authorityRegistrationRequest(
         string memory _name,
         string memory _domain
-    ) external payable override {
-        require(!isAuthority(msg.sender), "authority is already registered");
-        require(
-            addressToRequest[msg.sender] == 0,
-            "registration is already initialized"
-        );
+    ) external payable {
+        require(!isAuthority(msg.sender));
+        require(vrfAToR[msg.sender] == 0);
 
         authorities[msg.sender] = Authority({
             name: _name,
@@ -68,57 +109,58 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2 {
             vrfConfig.numWords
         );
 
-        requestToAddress[requestId] = msg.sender;
-        addressToRequest[msg.sender] = requestId;
+        vrfRToA[requestId] = msg.sender;
+        vrfAToR[msg.sender] = requestId;
     }
 
     function authorityRegistrationRetrieve()
         external
         view
-        override
         returns (string memory)
     {
-        require(!isAuthority(msg.sender), "authority is already registered");
-        require(
-            addressToRequest[msg.sender] > 0,
-            "registration is not initialized"
-        );
-        require(
-            bytes(randomStrings[msg.sender]).length > 0,
-            "random string is not ready"
-        );
+        require(!isAuthority(msg.sender));
+        require(vrfAToR[msg.sender] > 0);
+        require(bytes(originalRandomStrings[msg.sender]).length > 0);
 
-        return randomStrings[msg.sender];
+        return originalRandomStrings[msg.sender];
     }
 
-    function authorityRegistrationConfirm() external payable override {
-        require(!isAuthority(msg.sender), "authority is already registered");
-        require(
-            addressToRequest[msg.sender] > 0,
-            "registration is not initialized"
-        );
-        require(
-            bytes(randomStrings[msg.sender]).length > 0,
-            "random string is not ready"
-        );
-        require(isDNSRecordMatched(msg.sender), "DNS record is not matched");
+    function authorityRegistrationVerify() external payable {
+        require(!isAuthority(msg.sender));
+        require(vrfAToR[msg.sender] > 0);
+        require(bytes(originalRandomStrings[msg.sender]).length > 0);
+        require(apiAToR[msg.sender] == 0);
 
-        delete requestToAddress[addressToRequest[msg.sender]];
-        delete addressToRequest[msg.sender];
-        delete randomStrings[msg.sender];
+        getDNSRecord(msg.sender);
+    }
+
+    function authorityRegistrationConfirm() external payable {
+        require(!isAuthority(msg.sender));
+        require(vrfAToR[msg.sender] > 0);
+        require(bytes(originalRandomStrings[msg.sender]).length > 0);
+        require(bytes(targetDNSRecords[msg.sender]).length > 0);
+        require(
+            keccak256(abi.encodePacked(originalRandomStrings[msg.sender])) ==
+                keccak256(abi.encodePacked(targetDNSRecords[msg.sender]))
+        );
+
+        delete vrfRToA[vrfAToR[msg.sender]];
+        delete vrfAToR[msg.sender];
+        delete originalRandomStrings[msg.sender];
+
+        delete apiRToA[apiAToR[msg.sender]];
+        delete apiAToR[msg.sender];
+        delete targetDNSRecords[msg.sender];
 
         authorities[msg.sender].renewed = true;
         authorities[msg.sender].lastCheck = block.timestamp;
         authorities[msg.sender].registered = true;
     }
 
-    function authorityRenewalRequest() external payable override {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(!isAuthorityValid(msg.sender), "authority is still valid");
-        require(
-            addressToRequest[msg.sender] == 0,
-            "renewal is already initialized"
-        );
+    function authorityRenewalRequest() external payable {
+        require(isAuthority(msg.sender));
+        require(!isAuthorityValid(msg.sender));
+        require(vrfAToR[msg.sender] == 0);
 
         authorities[msg.sender].renewed = false;
 
@@ -130,62 +172,98 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2 {
             vrfConfig.numWords
         );
 
-        requestToAddress[requestId] = msg.sender;
-        addressToRequest[msg.sender] = requestId;
+        vrfRToA[requestId] = msg.sender;
+        vrfAToR[msg.sender] = requestId;
     }
 
-    function authorityRenewalRetrieve()
-        external
-        view
-        override
-        returns (string memory)
-    {
-        require(isAuthority(msg.sender), "authority is never registered");
-        require(!isAuthorityValid(msg.sender), "authority is still valid");
-        require(
-            !authorities[msg.sender].renewed &&
-                addressToRequest[msg.sender] > 0,
-            "renewal is not initialized"
-        );
-        require(
-            bytes(randomStrings[msg.sender]).length > 0,
-            "random string is not ready"
-        );
+    function authorityRenewalRetrieve() external view returns (string memory) {
+        require(isAuthority(msg.sender));
+        require(!isAuthorityValid(msg.sender));
+        require(!authorities[msg.sender].renewed && vrfAToR[msg.sender] > 0);
+        require(bytes(originalRandomStrings[msg.sender]).length > 0);
 
-        return randomStrings[msg.sender];
+        return originalRandomStrings[msg.sender];
     }
 
-    function authorityRenewalConfirm() external payable override {
-        require(isAuthority(msg.sender), "authority is already registered");
-        require(!isAuthorityValid(msg.sender), "authority is still valid");
-        require(
-            !authorities[msg.sender].renewed &&
-                addressToRequest[msg.sender] > 0,
-            "renewal is not initialized"
-        );
-        require(
-            bytes(randomStrings[msg.sender]).length > 0,
-            "random string is not ready"
-        );
-        require(isDNSRecordMatched(msg.sender), "DNS record is not matched");
+    function authorityRenewalVerify() external payable {
+        require(isAuthority(msg.sender));
+        require(!isAuthorityValid(msg.sender));
+        require(!authorities[msg.sender].renewed && vrfAToR[msg.sender] > 0);
+        require(bytes(originalRandomStrings[msg.sender]).length > 0);
+        require(apiAToR[msg.sender] == 0);
 
-        delete requestToAddress[addressToRequest[msg.sender]];
-        delete addressToRequest[msg.sender];
-        delete randomStrings[msg.sender];
+        getDNSRecord(msg.sender);
+    }
+
+    function authorityRenewalConfirm() external payable {
+        require(isAuthority(msg.sender));
+        require(!isAuthorityValid(msg.sender));
+        require(!authorities[msg.sender].renewed && vrfAToR[msg.sender] > 0);
+        require(bytes(originalRandomStrings[msg.sender]).length > 0);
+        require(bytes(targetDNSRecords[msg.sender]).length > 0);
+        require(
+            keccak256(abi.encodePacked(originalRandomStrings[msg.sender])) ==
+                keccak256(abi.encodePacked(targetDNSRecords[msg.sender]))
+        );
+
+        delete vrfRToA[vrfAToR[msg.sender]];
+        delete vrfAToR[msg.sender];
+        delete originalRandomStrings[msg.sender];
+
+        delete apiRToA[apiAToR[msg.sender]];
+        delete apiAToR[msg.sender];
+        delete targetDNSRecords[msg.sender];
 
         authorities[msg.sender].renewed = true;
         authorities[msg.sender].lastCheck = block.timestamp;
+    }
+
+    function getDNSRecord(address _account) private {
+        Chainlink.Request memory request = buildChainlinkRequest(
+            apiConfig.jobId,
+            address(this),
+            this.fulfillAPICalls.selector
+        );
+
+        // Prepare the target API URL
+        request.add(
+            "get",
+            string(
+                abi.encodePacked(
+                    "https://dns.google/resolve?name=",
+                    authorities[_account].domain,
+                    "&type=txt"
+                )
+            )
+        );
+
+        // Prepare the target JSON entry
+        request.add("path", "Answer,data");
+
+        bytes32 requestId = sendChainlinkRequest(request, apiConfig.fee);
+        apiRToA[requestId] = _account;
+        apiAToR[_account] = requestId;
     }
 
     function fulfillRandomWords(
         uint256 _requestId,
         uint256[] memory _randomWords
     ) internal override {
-        randomStrings[requestToAddress[_requestId]] = _randomWords[0].toString();
+        originalRandomStrings[vrfRToA[_requestId]] = _randomWords[0].toString();
     }
 
-    function isDNSRecordMatched(address _account) private pure returns (bool) {
-        _account;
-        return true;
+    function fulfillAPICalls(
+        bytes32 _requestId,
+        string memory _record
+    ) public recordChainlinkFulfillment(_requestId) {
+        targetDNSRecords[apiRToA[_requestId]] = _record;
+    }
+
+    function withdrawLink() public {
+        require(msg.sender == owner);
+
+        LinkTokenInterface link = LinkTokenInterface(chainlinkTokenAddress());
+
+        require(link.transfer(msg.sender, link.balanceOf(address(this))));
     }
 }

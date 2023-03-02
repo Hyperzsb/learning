@@ -130,20 +130,6 @@ contract CCSBase is ERC3525 {
         expirationTime = _expirationTime;
     }
 
-    function authorityRegistrationRequest(
-        string memory _name,
-        string memory _domain
-    ) external payable virtual {}
-
-    function authorityRegistrationRetrieve()
-        external
-        view
-        virtual
-        returns (string memory)
-    {}
-
-    function authorityRegistrationConfirm() external payable virtual {}
-
     /**
      * @notice Checks whether the given account is registered as an authority
      * @param _account The address to check
@@ -189,15 +175,4 @@ contract CCSBase is ERC3525 {
 
         return authorities[_account];
     }
-
-    function authorityRenewalRequest() external payable virtual {}
-
-    function authorityRenewalRetrieve()
-        external
-        view
-        virtual
-        returns (string memory)
-    {}
-
-    function authorityRenewalConfirm() external payable virtual {}
 }
