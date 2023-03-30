@@ -312,7 +312,7 @@ contract CCSAuthorityRR is CCSBase, VRFConsumerBaseV2, ChainlinkClient {
         );
 
         // Prepare the target JSON entry
-        request.add("path", "Answer,data");
+        request.add("path", "Answer,0,data");
 
         bytes32 requestId = sendChainlinkRequest(request, apiConfig.fee);
         apiRToA[requestId] = _account;
