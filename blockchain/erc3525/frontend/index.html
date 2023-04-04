@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css"
+    />
+    <script type="module">
+      import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.2.3/ethers.min.js";
+
+      let provider = null;
+      let signer = null;
+
+      // Check if the MetaMask is installed
+      if (window.ethereum == null) {
+        document.getElementById("wallet-status").innerText = "Not installed";
+        // If not, use the default provider for read-only purposes
+        provider = ethers.getDefaultProvider();
+      } else {
+        document.getElementById("wallet-status").innerText =
+          "Installed but not connected";
+        // If so, try to connect the wallet
+        provider = new ethers.BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+        // Check if the wallet is connected
+        if (signer != null) {
+          document.getElementById("wallet-status").innerText = "Connected";
+        }
+      }
+
+      // Display the current network
+      const currentNetwork = await provider.getNetwork();
+      document.getElementById("current-network").innerText =
+        currentNetwork.name.charAt(0).toUpperCase() +
+        currentNetwork.name.slice(1) +
+        " (" +
+        currentNetwork.chainId +
+        ")";
+      // Display the current block number
+      const blockNumber = await provider.getBlockNumber();
+      document.getElementById("block-number").innerText = blockNumber;
+      // Display the current account address
+      const accountAddress = await signer.getAddress();
+      document.getElementById("account-address").innerText = accountAddress;
+      // Display the current account balance
+      const accountBalance = await provider.getBalance(accountAddress);
+      document.getElementById("account-balance").innerText =
+        ethers.formatEther(accountBalance);
+
+      // Define the ABI for some functions
+      const abi = [
+        "function name() view returns (string)",
+        "function symbol() view returns (string)",
+        "function owner() view returns (address)",
+        "function contractURI() view returns (string)",
+      ];
+      // Define the contract address
+      const contractAddress = "0xc5d59500a8fef16017F2F01D4286dB17C3C18D07";
+      // Display the contract address
+      document.getElementById("contract-address").innerText = contractAddress;
+      // Define the contract
+      const contract = new ethers.Contract(contractAddress, abi, provider);
+
+      // Display the contract symbol
+      const contractName = await contract.name();
+      document.getElementById("contract-name").innerText = contractName;
+      // Display the contract symbol
+      const contractSymbol = await contract.symbol();
+      document.getElementById("contract-symbol").innerText = contractSymbol;
+      // Display the contract owner
+      const contractOwner = await contract.owner();
+      document.getElementById("contract-owner").innerText = contractOwner;
+
+      document
+        .getElementById("get-contract-uri")
+        .addEventListener("click", async function () {
+          // Display the contract owner
+          const contractURI = await contract.contractURI();
+
+          // Display the raw data
+          // document.getElementById("contract-uri").innerText = contractURI;
+
+          // Display the SVG image
+          // Convert the string to a Blob object
+          const svgBlob = new Blob([contractURI], {
+            type: "image/svg+xml;charset=utf-8",
+          });
+          // Create a URL for the Blob object
+          const svgUrl = URL.createObjectURL(svgBlob);
+          // Create an <img> element and set its src attribute to the URL
+          const img = document.createElement("img");
+          img.src = svgUrl;
+          img.style.width = "100%";
+          img.style.border = "1px solid black";
+          // Append the <img> element to a container in the DOM to display it
+          document.getElementById("contract-uri").appendChild(img);
+
+          // Activate the modal
+          const modal = new bootstrap.Modal("#contract-uri-modal", {});
+          modal.show();
+        });
+    </script>
+  </head>
+
+  <body class="container-fluid">
+    <header class="row">
+      <div class="col-3 row align-items-center justify-content-center">
+        <div class="text-center">
+          <span class="fs-3 fw-bold">CCS Demo</span>
+        </div>
+      </div>
+      <div class="col-9 row flex-column text-end py-1">
+        <div class="col my-1">
+          Wallet Status: <b id="wallet-status">Unknown</b>
+        </div>
+        <div class="col my-1">Account: <b id="account-address">Unknown</b></div>
+        <div class="col my-1">
+          Balance: <b id="account-balance">Unknown</b> ETH
+        </div>
+      </div>
+    </header>
+
+    <main class="my-4 min-vh-100">
+      <h1 class="my-3 py-3 text-center">
+        <p class="m-0">Community Credit System</p>
+        <p class="m-0">based on Semi-Fungible Tokens</p>
+      </h1>
+
+      <section class="row flex-column my-4 text-center">
+        <h2 class="mb-3">Basic Info</h2>
+        <div class="col my-1">
+          Contract Address:
+          <b id="contract-address">Unknown</b>
+        </div>
+        <div class="col my-1">
+          Contract Name
+          <a
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-title="function name() view returns (string)"
+            class="text-decoration-none"
+          >
+            <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+          </a>
+          :
+          <b id="contract-name">Unknown</b>
+        </div>
+        <div class="col my-1">
+          Contract Symbol
+          <a
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-title="function symbol() view returns (string)"
+            class="text-decoration-none"
+          >
+            <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+          </a>
+          :
+          <b id="contract-symbol">Unknown</b>
+        </div>
+        <div class="col my-1">
+          Contract Owner
+          <a
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-title="function owner() view returns (address)"
+            class="text-decoration-none"
+          >
+            <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+          </a>
+          :
+          <b id="contract-owner">Unknown</b>
+        </div>
+        <div class="col my-1">
+          Contract URI
+          <a
+            href="#"
+            data-bs-toggle="tooltip"
+            data-bs-title="function contractURI() view returns (string)"
+            class="text-decoration-none"
+          >
+            <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+          </a>
+          :
+          <button
+            type="button"
+            class="btn btn-primary btn-sm"
+            id="get-contract-uri"
+          >
+            Get Contract URI
+          </button>
+          <div
+            class="modal fade"
+            id="contract-uri-modal"
+            tabindex="-1"
+            aria-labelledby="contract-uri-modal-label"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="contract-uri-modal-label">
+                    Contract URI
+                  </h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body p-5" id="contract-uri"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="row align-items-center justify-content-center">
+      <div class="col text-center py-3">
+        <p>
+          Current Network: <b id="current-network">Unknown</b> Block Number:
+          <b id="block-number">Unknown</b>
+        </p>
+      </div>
+    </footer>
+
+    <script>
+      const tooltipTriggerList = document.querySelectorAll(
+        '[data-bs-toggle="tooltip"]'
+      );
+      const tooltipList = [...tooltipTriggerList].map(
+        (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+      );
+    </script>
+  </body>
+</html>
