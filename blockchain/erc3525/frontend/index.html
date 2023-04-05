@@ -22,6 +22,7 @@
     />
     <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/highlightjs-solidity@2.0.6/dist/solidity.min.js"></script>
+    <script src="utils.js"></script>
     <script type="module" src="index.js"></script>
   </head>
 
@@ -45,7 +46,7 @@
       </div>
     </header>
 
-    <main class="my-4 min-vh-100">
+    <main class="row my-4 min-vh-100">
       <!-- Main heading of the demo -->
       <h1 class="my-3 py-3 text-center">
         <p class="m-0">Community Credit System</p>
@@ -128,32 +129,6 @@
             >
               Get Contract URI
             </button>
-            <div
-              class="modal fade"
-              id="contract-uri-modal"
-              tabindex="-1"
-              aria-labelledby="contract-uri-modal-label"
-              aria-hidden="true"
-            >
-              <div
-                class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-              >
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="contract-uri-modal-label">
-                      Contract URI
-                    </h1>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-                  <div class="modal-body p-5" id="contract-uri"></div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -316,6 +291,39 @@
       </section>
     </main>
 
+    <footer class="row">
+      <div class="row text-center py-3">
+        <p>
+          Current Network: <strong id="current-network">Unknown</strong> Block
+          Number:
+          <strong id="block-number">Unknown</strong>
+        </p>
+      </div>
+    </footer>
+
+    <div
+      class="modal fade"
+      id="uri-modal"
+      tabindex="-1"
+      aria-labelledby="uri-modal-label"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="uri-modal-label"></h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body p-5" id="uri-container"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="toast-container position-fixed top-0 end-0 p-3">
       <div
         id="toast"
@@ -345,16 +353,6 @@
       </div>
     </div>
 
-    <footer class="row align-items-center justify-content-center">
-      <div class="col text-center py-3">
-        <p>
-          Current Network: <strong id="current-network">Unknown</strong> Block
-          Number:
-          <strong id="block-number">Unknown</strong>
-        </p>
-      </div>
-    </footer>
-
     <script>
       const tooltipTriggerList = document.querySelectorAll(
         '[data-bs-toggle="tooltip"]'
@@ -362,31 +360,6 @@
       const tooltipList = [...tooltipTriggerList].map(
         (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
       );
-    </script>
-    <script>
-      function toggleToast(status, body) {
-        const toast = new bootstrap.Toast("#toast", {});
-
-        if (status == true) {
-          document.getElementById("toast-title-failure").style.display = "none";
-          document.getElementById("toast-title-success").style.display =
-            "inline-block";
-        } else {
-          document.getElementById("toast-title-failure").style.display =
-            "inline-block";
-          document.getElementById("toast-title-success").style.display = "none";
-        }
-
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
-        const timeString = `${hours}:${minutes}:${seconds}`;
-        document.getElementById("toast-time").innerText = timeString;
-
-        document.getElementById("toast-body").innerText = body;
-        toast.show();
-      }
     </script>
   </body>
 </html>

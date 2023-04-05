@@ -77,29 +77,7 @@ document
     // Retrieve the content of the contract URI
     const contractURI = await contract.contractURI();
 
-    // Display the SVG image
-    // Convert the string to a Blob object
-    const svgBlob = new Blob([contractURI], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    // Create a URL for the Blob object
-    const svgUrl = URL.createObjectURL(svgBlob);
-    // Create an <img> element and set its src attribute to the URL
-    const img = document.createElement("img");
-    img.src = svgUrl;
-    img.style.width = "100%";
-    img.style.border = "1px solid black";
-
-    // Append the <img> element to a modal to display it
-    const container = document.getElementById("contract-uri");
-    while (container.firstChild) {
-      container.removeChild(container.firstChild);
-    }
-    container.appendChild(img);
-
-    // Activate the modal
-    const modal = new bootstrap.Modal("#contract-uri-modal", {});
-    modal.show();
+    toggleModal("Contract URI", contractURI);
   });
 
 // Define a slot
