@@ -125,9 +125,9 @@
             <button
               type="button"
               class="btn btn-primary btn-sm"
-              id="get-contract-uri"
+              id="contract-uri-submit"
             >
-              Get Contract URI
+              Get and Display the Contract URI
             </button>
           </div>
         </div>
@@ -188,7 +188,6 @@
           </div>
           <div class="col-4 text-start">
             <div class="input-group input-group-sm">
-              <span class="input-group-text">Get</span>
               <input
                 type="text"
                 class="form-control"
@@ -207,6 +206,37 @@
           <div class="col-2 text-start">
             <strong id="slot-info-result">Unknown</strong>
           </div>
+        </div>
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Slot URI
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function slotURI(uint256 _slot) view returns (string)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-5 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Slot ID"
+                id="slot-uri-id"
+              />
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                id="slot-uri-submit"
+              >
+                Get and Display the Slot URI
+              </button>
+            </div>
+          </div>
+          <div class="col-1"></div>
         </div>
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
@@ -261,14 +291,12 @@
           </div>
           <div class="col-4 text-start">
             <div class="input-group input-group-sm">
-              <span class="input-group-text">Check</span>
               <input
                 type="text"
                 class="form-control"
                 placeholder="Slot ID"
                 id="slot-allocation-status-id"
               />
-              <span class="input-group-text">Of</span>
               <input
                 type="text"
                 class="form-control"
@@ -287,6 +315,113 @@
           <div class="col-2 text-start">
             <strong id="slot-allocation-status-result">Unknown</strong>
           </div>
+        </div>
+      </section>
+      <!-- Authority-related APIs section -->
+      <section class="row my-3 py-3 text-center">
+        <h2 class="mb-3">Authority</h2>
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Authority Existence
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function isAuthority(address _account) view returns (bool)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Account Address"
+                id="authority-existence-address"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-existence-submit"
+              >
+                Check
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="authority-existence-result">Unknown</strong>
+          </div>
+        </div>
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Authority Validity
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function isAuthorityValid(address _account) view returns (bool)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Account Address"
+                id="authority-validity-address"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-validity-submit"
+              >
+                Check
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="authority-validity-result">Unknown</strong>
+          </div>
+        </div>
+        <div class="row justify-content-center my-2 d-none">
+          <div class="col-4 text-end">
+            Authority Info
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function authorityInfo(address _account) view returns (string name, string domain, uint256[] slots, bool registered, bool renewed, uint256 lastCheck)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-5 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Account Address"
+                id="authority-info-address"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-info-submit"
+              >
+                Get Info
+              </button>
+            </div>
+          </div>
+          <div class="col-1"></div>
+          <div class="w-100"></div>
+          <div class="col-4"></div>
+          <div class="col-4 mt-2 text-start">
+            <strong id="authority-info-result">Unknown</strong>
+          </div>
+          <div class="col-2"></div>
         </div>
       </section>
     </main>

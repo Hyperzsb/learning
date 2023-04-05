@@ -50,8 +50,13 @@ const abi = [
   // Slot-related APIs
   "function slotDefine(uint256 _slot, string _name)",
   "function slotInfo(uint256 _slot) view returns (string)",
+  "function slotURI(uint256 _slot) view returns (string)",
   "function slotAllocate(uint256 _slot, address _account)",
   "function isSlotAllocatedTo(uint256 _slot, address _account) view returns (bool)",
+  // Authority-related APIs
+  "function isAuthority(address _account) view returns (bool)",
+  "function isAuthorityValid(address _account) view returns (bool)",
+  "function authorityInfo(address _account) view returns (string, string, uint256[], bool, bool, uint256)",
 ];
 // Define the contract address
 const contractAddress = "0xc5d59500a8fef16017F2F01D4286dB17C3C18D07";
@@ -72,9 +77,8 @@ document.getElementById("contract-owner").innerText = contractOwner;
 
 // Get and display the contract URI
 document
-  .getElementById("get-contract-uri")
+  .getElementById("contract-uri-submit")
   .addEventListener("click", async function () {
-    // Retrieve the content of the contract URI
     const contractURI = await contract.contractURI();
 
     toggleModal("Contract URI", contractURI);
@@ -104,6 +108,15 @@ document
     const name = await contract.slotInfo(id);
     document.getElementById("slot-info-result").innerText = name;
   });
+// Get and display the slot URI
+document
+  .getElementById("slot-uri-submit")
+  .addEventListener("click", async function () {
+    const slot = document.getElementById("slot-uri-id").value;
+    const slotURI = await contract.slotURI(slot);
+
+    toggleModal("Slot URI", slotURI);
+  });
 // Allocate a slot to an address
 document
   .getElementById("slot-allocation-submit")
@@ -132,4 +145,35 @@ document
     const status = await contract.isSlotAllocatedTo(id, address);
 
     document.getElementById("slot-allocation-status-result").innerText = status;
+  });
+
+// Check the existence of an authority
+document
+  .getElementById("authority-existence-submit")
+  .addEventListener("click", async function () {
+    const address = document.getElementById(
+      "authority-existence-address"
+    ).value;
+    const existence = await contract.isAuthority(address);
+
+    document.getElementById("authority-existence-result").innerText = existence;
+  });
+// Check the validity of an authority
+document
+  .getElementById("authority-validity-submit")
+  .addEventListener("click", async function () {
+    const address = document.getElementById("authority-validity-address").value;
+    const validity = await contract.isAuthorityValid(address);
+
+    document.getElementById("authority-validity-result").innerText = validity;
+  });
+// Get the info of an authority
+document
+  .getElementById("authority-info-submit")
+  .addEventListener("click", async function () {
+    const address = document.getElementById("authority-info-address").value;
+    const info = await contract.authorityInfo(address);
+
+    document.getElementById("authority-info-result").innerText =
+      JSON.stringify(info);
   });
