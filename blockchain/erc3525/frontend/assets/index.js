@@ -40,24 +40,32 @@ const accountBalance = await provider.getBalance(accountAddress);
 document.getElementById("account-balance").innerText =
   ethers.formatEther(accountBalance);
 
-// Define the ABI for some functions
-const abi = [
-  // Contract-related APIs
-  "function name() view returns (string)",
-  "function symbol() view returns (string)",
-  "function owner() view returns (address)",
-  "function contractURI() view returns (string)",
-  // Slot-related APIs
-  "function slotDefine(uint256 _slot, string _name)",
-  "function slotInfo(uint256 _slot) view returns (string)",
-  "function slotURI(uint256 _slot) view returns (string)",
-  "function slotAllocate(uint256 _slot, address _account)",
-  "function isSlotAllocatedTo(uint256 _slot, address _account) view returns (bool)",
-  // Authority-related APIs
-  "function isAuthority(address _account) view returns (bool)",
-  "function isAuthorityValid(address _account) view returns (bool)",
-  "function authorityInfo(address _account) view returns (string, string, uint256[], bool, bool, uint256)",
-];
+// Define the ABI for some functions manually
+// const abiJSON = [
+//   // Contract-related APIs
+//   "function name() view returns (string)",
+//   "function symbol() view returns (string)",
+//   "function owner() view returns (address)",
+//   "function contractURI() view returns (string)",
+//   // Slot-related APIs
+//   "function slotDefine(uint256 _slot, string _name)",
+//   "function slotInfo(uint256 _slot) view returns (string)",
+//   "function slotURI(uint256 _slot) view returns (string)",
+//   "function slotAllocate(uint256 _slot, address _account)",
+//   "function isSlotAllocatedTo(uint256 _slot, address _account) view returns (bool)",
+//   // Authority-related APIs
+//   "function isAuthority(address _account) view returns (bool)",
+//   "function isAuthorityValid(address _account) view returns (bool)",
+//   "function authorityInfo(address _account) view returns (string, string, uint256[], bool, bool, uint256)",
+// ];
+
+// Define the ABI for all functions automatically
+const fullRawJSON = await fetch("assets/abi.json");
+const fullJSON = await fullRawJSON.json();
+const abiJSON = fullJSON.abi;
+
+const abi = abiJSON;
+
 // Define the contract address
 const contractAddress = "0xc5d59500a8fef16017F2F01D4286dB17C3C18D07";
 // Define the contract
@@ -175,5 +183,5 @@ document
     const info = await contract.authorityInfo(address);
 
     document.getElementById("authority-info-result").innerText =
-      JSON.stringify(info);
+      info.toString();
   });
