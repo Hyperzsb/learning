@@ -19,6 +19,10 @@ if (window.ethereum == null) {
   } else {
     alert("You must connect your wallet to this app before proceeding!");
   }
+  // Refresh the page when network changed
+  window.ethereum.on("chainChanged", (chainId) => {
+    location.reload();
+  });
 }
 
 // Display the current network
@@ -73,12 +77,15 @@ const contract = new ethers.Contract(contractAddress, abi, signer);
 
 // Display the contract address
 document.getElementById("contract-address").innerText = contractAddress;
-// Display the contract symbol
+// Display the contract name
 const contractName = await contract.name();
 document.getElementById("contract-name").innerText = contractName;
 // Display the contract symbol
 const contractSymbol = await contract.symbol();
 document.getElementById("contract-symbol").innerText = contractSymbol;
+// Display the contract decimals
+const contractDecimals = await contract.valueDecimals();
+document.getElementById("contract-decimals").innerText = contractDecimals;
 // Display the contract owner
 const contractOwner = await contract.owner();
 document.getElementById("contract-owner").innerText = contractOwner;

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Community Credit System</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -13,15 +14,23 @@
       crossorigin="anonymous"
     ></script>
     <link
-      rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css"
+      rel="stylesheet"
+      crossorigin="anonymous"
     />
     <link
+      href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
       rel="stylesheet"
-      href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/styles/default.min.css"
+      crossorigin="anonymous"
     />
-    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/highlightjs-solidity@2.0.6/dist/solidity.min.js"></script>
+    <script
+      src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.7.0/build/highlight.min.js"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/highlightjs-solidity@2.0.6/dist/solidity.min.js"
+      crossorigin="anonymous"
+    ></script>
     <script src="assets/utils.js"></script>
     <script type="module" src="assets/index.js"></script>
   </head>
@@ -47,20 +56,27 @@
     </header>
 
     <main class="row my-4 min-vh-100">
-      <!-- Main heading of the demo -->
       <h1 class="my-3 py-3 text-center">
         <p class="m-0">Community Credit System</p>
         <p class="m-0">based on Semi-Fungible Tokens</p>
       </h1>
-      <!-- Contract-related APIs section -->
+      <!-- 1. Contract-related APIs section -->
+      <!-- 1.1. Contract address -->
+      <!-- 1.2. Contract name -->
+      <!-- 1.3. Contract symbol -->
+      <!-- 1.4. Contract decimal -->
+      <!-- 1.4. Contract owner -->
+      <!-- 1.5. COntract URI -->
       <section class="row my-3 py-3 text-center">
         <h2 class="mb-3">Contract</h2>
+        <!-- 1.1. Contract address subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">Contract Address</div>
           <div class="col-6 text-start">
             <strong id="contract-address">Unknown</strong>
           </div>
         </div>
+        <!-- 1.2. Contract name subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Contract Name
@@ -77,6 +93,7 @@
             <strong id="contract-name">Unknown</strong>
           </div>
         </div>
+        <!-- 1.3. Contract symbol subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Contract Symbol
@@ -93,6 +110,24 @@
             <strong id="contract-symbol">Unknown</strong>
           </div>
         </div>
+        <!-- 1.4. Contract decimals subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Contract Decimals
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function valueDecimals() view returns (uint8)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-6 text-start">
+            <strong id="contract-decimals">Unknown</strong>
+          </div>
+        </div>
+        <!-- 1.5. Contract owner subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Contract Owner
@@ -109,6 +144,7 @@
             <strong id="contract-owner">Unknown</strong>
           </div>
         </div>
+        <!-- 1.6. Contract URI subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Contract URI
@@ -122,19 +158,27 @@
             </a>
           </div>
           <div class="col-6 text-start">
-            <button
-              type="button"
-              class="btn btn-primary btn-sm"
-              id="contract-uri-submit"
-            >
-              Get and Display the Contract URI
-            </button>
+            <div class="input-group input-group-sm">
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="contract-uri-submit"
+              >
+                Get and Display the Contract URI
+              </button>
+            </div>
           </div>
         </div>
       </section>
-      <!-- Slot-related APIs section -->
+      <!-- 2. Slot-related APIs section -->
+      <!-- 2.1. Slot definition -->
+      <!-- 2.2. Slot info -->
+      <!-- 2.3. Slot URI -->
+      <!-- 2.4. Slot allocation -->
+      <!-- 2.5. Slot allocation status -->
       <section class="row my-3 py-3 text-center">
         <h2 class="mb-3">Slot</h2>
+        <!-- 2.1 Slot definition subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Slot Definition
@@ -174,6 +218,7 @@
           </div>
           <div class="col-1"></div>
         </div>
+        <!-- 2.2. Slot info subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Slot Info
@@ -207,6 +252,7 @@
             <strong id="slot-info-result">Unknown</strong>
           </div>
         </div>
+        <!-- 2.3. Slot URI subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Slot URI
@@ -238,6 +284,7 @@
           </div>
           <div class="col-1"></div>
         </div>
+        <!-- 2.4. Slot allocation subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Slot Allocation
@@ -277,6 +324,7 @@
           </div>
           <div class="col-1"></div>
         </div>
+        <!-- 2.5. Slot allocation status subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Slot Allocation Status
@@ -317,9 +365,17 @@
           </div>
         </div>
       </section>
-      <!-- Authority-related APIs section -->
+      <!-- 3. Authority-related APIs section -->
+      <!-- 3.1. Authority existence -->
+      <!-- 3.2. Authority validity -->
+      <!-- 3.3. Authority info -->
+      <!-- 3.4. Authority registration request -->
+      <!-- 3.5. Authority registration retrieval -->
+      <!-- 3.5. Authority registration verification -->
+      <!-- 3.5. Authority registration confirmation -->
       <section class="row my-3 py-3 text-center">
         <h2 class="mb-3">Authority</h2>
+        <!-- 3.1. Authority existence subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Authority Existence
@@ -353,6 +409,7 @@
             <strong id="authority-existence-result">Unknown</strong>
           </div>
         </div>
+        <!-- 3.2. Authority validity subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Authority Validity
@@ -386,6 +443,7 @@
             <strong id="authority-validity-result">Unknown</strong>
           </div>
         </div>
+        <!-- 3.3. Authority info subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Authority Info
@@ -422,6 +480,391 @@
             <strong id="authority-info-result">Unknown</strong>
           </div>
           <div class="col-2"></div>
+        </div>
+        <!-- 3.4. Authority registration request -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Authority Registration Request
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function authorityRegistrationRequest(string _name, string memory _domain) payable"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-5 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Authority Name"
+                id="authority-registration-request-name"
+              />
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Authority Domain"
+                id="authority-registration-request-domain"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-registration-request-submit"
+              >
+                Send Request
+              </button>
+            </div>
+          </div>
+          <div class="col-1"></div>
+        </div>
+        <!-- 3.5. Authority registration retrieval subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Authority Registration Retrieval
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function authorityRegistrationRetrieve() view returns (string)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-registration-retrival-submit"
+              >
+                Retrieve the Random Number Generated by Chainlink oracle
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="authority-registration-retrival-result">Unknown</strong>
+          </div>
+        </div>
+        <!-- 3.6. Authority registration verification subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Authority Registration Verification
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function authorityRegistrationVerify() payable"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-6 text-start">
+            <div class="input-group input-group-sm">
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-registration-verification-submit"
+              >
+                Verify the TXT DNS Record of the Target Domain
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- 3.7. Authority registration confirmation subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Authority Registration Confirmation
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function authorityRegistrationConfirm() payable"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-6 text-start">
+            <div class="input-group input-group-sm">
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="authority-registration-confirmation-submit"
+              >
+                Confirm the Registration of the Authority
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- 4. Token-related APIs section -->
+      <!-- 4.1. Token mintage -->
+      <!-- 4.2. Account balance -->
+      <!-- 4.3. Token balance -->
+      <!-- 4.4. Token transfer -->
+      <!-- 4.5. Token owner -->
+      <!-- 4.6. Token slot -->
+      <!-- 4.7. Token URI -->
+      <section class="row my-3 py-3 text-center">
+        <h2 class="mb-3">Token</h2>
+        <!-- 4.1. Token mintage  subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Token Mintage
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function mint(uint256 _slot, uint256 _value) returns (uint256)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Slot ID"
+                id="token-mintage-slot"
+              />
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Value"
+                id="token-mintage-value"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="token-mintage-submit"
+              >
+                Mintage
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="token-mintage-result">Unknown</strong>
+          </div>
+        </div>
+        <!-- 4.2. Account balance subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Account Balance
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function balanceOf(address _owner) view returns (uint256)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Account Address"
+                id="account-balance-address"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="account-balance-submit"
+              >
+                Get Balance
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="account-balance-result">Unknown</strong>
+          </div>
+        </div>
+        <!-- 4.3. Token balance subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Token Balance
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function balanceOf(uint256 _tokenId) view returns (uint256)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Token ID"
+                id="token-balance-token"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="token-balance-submit"
+              >
+                Get Balance
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="account-balance-result">Unknown</strong>
+          </div>
+        </div>
+        <!-- 4.4. Token transfer subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Token Transfer
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="    function transferFrom(uint256 _fromTokenId, address _to, uint256 _value) payable returns (uint256)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="From Token ID"
+                id="token-transfer-token"
+              />
+              <input
+                type="text"
+                class="form-control"
+                placeholder="To Address"
+                id="token-transfer-address"
+              />
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Value"
+                id="token-transfer-value"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="token-transfer-submit"
+              >
+                Transfer
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="account-balance-result">Unknown</strong>
+          </div>
+        </div>
+        <!-- 4.5. Token owner subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Token Owner
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function ownerOf(uint256 _tokenId) view returns (address)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-5 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Token ID"
+                id="token-owner-token"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="token-owner-submit"
+              >
+                Get Owner
+              </button>
+            </div>
+          </div>
+          <div class="col-1 text-start"></div>
+          <div class="w-100"></div>
+          <div class="col-4"></div>
+          <div class="col-4 mt-2 text-start">
+            <strong id="token-owner-result">Unknown</strong>
+          </div>
+          <div class="col-2"></div>
+        </div>
+        <!-- 4.5. Token slot subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Token Slot
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function slotOf(uint256 _tokenId) view returns (uint256)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-4 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Token ID"
+                id="token-slot-token"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="token-slot-submit"
+              >
+                Get Slot
+              </button>
+            </div>
+          </div>
+          <div class="col-2 text-start">
+            <strong id="token-slot-result">Unknown</strong>
+          </div>
+        </div>
+        <!-- 4.7. Token URI subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Token URI
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function tokenURI(uint256 _tokenId) view returns (string)"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-5 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Token ID"
+                id="token-uri-token"
+              />
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                id="token-uri-submit"
+              >
+                Get and Display the Token URI
+              </button>
+            </div>
+          </div>
+          <div class="col-1"></div>
         </div>
       </section>
     </main>
