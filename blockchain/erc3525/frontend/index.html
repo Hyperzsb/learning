@@ -601,11 +601,12 @@
       <!-- 4. Token-related APIs section -->
       <!-- 4.1. Token mintage -->
       <!-- 4.2. Account balance -->
-      <!-- 4.3. Token balance -->
-      <!-- 4.4. Token transfer -->
-      <!-- 4.5. Token owner -->
-      <!-- 4.6. Token slot -->
-      <!-- 4.7. Token URI -->
+      <!-- 4.3. Account tokens -->
+      <!-- 4.4. Token balance -->
+      <!-- 4.5. Token transfer -->
+      <!-- 4.6. Token owner -->
+      <!-- 4.7. Token slot -->
+      <!-- 4.8. Token URI -->
       <section class="row my-3 py-3 text-center">
         <h2 class="mb-3">Token</h2>
         <!-- 4.1. Token mintage  subsection -->
@@ -621,7 +622,7 @@
               <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
             </a>
           </div>
-          <div class="col-4 text-start">
+          <div class="col-5 text-start">
             <div class="input-group input-group-sm">
               <input
                 type="text"
@@ -644,9 +645,7 @@
               </button>
             </div>
           </div>
-          <div class="col-2 text-start">
-            <strong id="token-mintage-result">Unknown</strong>
-          </div>
+          <div class="col-1"></div>
         </div>
         <!-- 4.2. Account balance subsection -->
         <div class="row justify-content-center my-2">
@@ -682,7 +681,45 @@
             <strong id="account-balance-result">Unknown</strong>
           </div>
         </div>
-        <!-- 4.3. Token balance subsection -->
+        <!-- 4.3. Account tokens subsection -->
+        <div class="row justify-content-center my-2">
+          <div class="col-4 text-end">
+            Account Tokens
+            <a
+              href="#"
+              data-bs-toggle="tooltip"
+              data-bs-title="function tokensOf(address _owner) view returns (uint256[])"
+              class="text-decoration-none"
+            >
+              <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
+            </a>
+          </div>
+          <div class="col-5 text-start">
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Account Address"
+                id="account-tokens-address"
+              />
+              <button
+                class="btn btn-primary"
+                type="button"
+                id="account-tokens-submit"
+              >
+                Get Tokens
+              </button>
+            </div>
+          </div>
+          <div class="col-1"></div>
+          <div class="w-100"></div>
+          <div class="col-4"></div>
+          <div class="col-4 mt-2 text-start">
+            <strong id="account-tokens-result">Unknown</strong>
+          </div>
+          <div class="col-2"></div>
+        </div>
+        <!-- 4.4. Token balance subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Token Balance
@@ -713,10 +750,10 @@
             </div>
           </div>
           <div class="col-2 text-start">
-            <strong id="account-balance-result">Unknown</strong>
+            <strong id="token-balance-result">Unknown</strong>
           </div>
         </div>
-        <!-- 4.4. Token transfer subsection -->
+        <!-- 4.5. Token transfer subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Token Transfer
@@ -729,7 +766,7 @@
               <i class="bi bi-info-circle" style="font-size: 0.8rem"></i>
             </a>
           </div>
-          <div class="col-4 text-start">
+          <div class="col-5 text-start">
             <div class="input-group input-group-sm">
               <input
                 type="text"
@@ -758,11 +795,9 @@
               </button>
             </div>
           </div>
-          <div class="col-2 text-start">
-            <strong id="account-balance-result">Unknown</strong>
-          </div>
+          <div class="col-1"></div>
         </div>
-        <!-- 4.5. Token owner subsection -->
+        <!-- 4.6. Token owner subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Token Owner
@@ -800,7 +835,7 @@
           </div>
           <div class="col-2"></div>
         </div>
-        <!-- 4.5. Token slot subsection -->
+        <!-- 4.7. Token slot subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Token Slot
@@ -834,7 +869,7 @@
             <strong id="token-slot-result">Unknown</strong>
           </div>
         </div>
-        <!-- 4.7. Token URI subsection -->
+        <!-- 4.8. Token URI subsection -->
         <div class="row justify-content-center my-2">
           <div class="col-4 text-end">
             Token URI

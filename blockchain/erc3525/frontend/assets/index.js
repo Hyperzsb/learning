@@ -75,6 +75,7 @@ const contractAddress = "0xc5d59500a8fef16017F2F01D4286dB17C3C18D07";
 // Define the contract
 const contract = new ethers.Contract(contractAddress, abi, signer);
 
+// Contract-related APIs
 // Display the contract address
 document.getElementById("contract-address").innerText = contractAddress;
 // Display the contract name
@@ -89,7 +90,6 @@ document.getElementById("contract-decimals").innerText = contractDecimals;
 // Display the contract owner
 const contractOwner = await contract.owner();
 document.getElementById("contract-owner").innerText = contractOwner;
-
 // Get and display the contract URI
 document
   .getElementById("contract-uri-submit")
@@ -99,6 +99,7 @@ document
     toggleModal("Contract URI", contractURI);
   });
 
+// Slot-related APIs
 // Define a slot
 document
   .getElementById("slot-definition-submit")
@@ -109,6 +110,7 @@ document
     const tx = await contract.slotDefine(id, name);
     const receipt = await tx.wait();
 
+    // console.log(JSON.stringify(receipt));
     if (receipt.status == 1) {
       toggleToast(true, `Slot ${id} has been defined as ${name}.`);
     } else {
@@ -162,6 +164,7 @@ document
     document.getElementById("slot-allocation-status-result").innerText = status;
   });
 
+// Authority-related APIs
 // Check the existence of an authority
 document
   .getElementById("authority-existence-submit")
@@ -191,4 +194,103 @@ document
 
     document.getElementById("authority-info-result").innerText =
       info.toString();
+  });
+
+// Token-related APIs
+// Mint a token
+document
+  .getElementById("token-mintage-submit")
+  .addEventListener("click", async function () {
+    const slot = document.getElementById("token-mintage-slot").value;
+    const value = document.getElementById("token-mintage-value").value;
+    const tx = await contract.mint(slot, value);
+    const receipt = await tx.wait();
+
+    // console.log(JSON.stringify(receipt));
+    if (receipt.status == 1) {
+      toggleToast(true, `A new token has been minted.`);
+    } else {
+      toggleToast(false, `A new token failed to be minted.`);
+    }
+  });
+// Get the balance of an address
+document
+  .getElementById("account-balance-submit")
+  .addEventListener("click", async function () {
+    const address = document.getElementById("account-balance-address").value;
+    const balance = await contract["balanceOf(address)"](address);
+
+    document.getElementById("account-balance-result").innerText = balance;
+  });
+// Get the tokens of an address
+document
+  .getElementById("account-tokens-submit")
+  .addEventListener("click", async function () {
+    const address = document.getElementById("account-tokens-address").value;
+    const tokens = await contract.tokensOf(address);
+
+    document.getElementById("account-tokens-result").innerText = tokens;
+  });
+// Get the balance of a Token
+document
+  .getElementById("token-balance-submit")
+  .addEventListener("click", async function () {
+    const token = document.getElementById("token-balance-token").value;
+    const balance = await contract["balanceOf(uint256)"](token);
+
+    document.getElementById("token-balance-result").innerText = balance;
+  });
+// Transfer a token to another address
+document
+  .getElementById("token-transfer-submit")
+  .addEventListener("click", async function () {
+    const token = document.getElementById("token-transfer-token").value;
+    const address = document.getElementById("token-transfer-address").value;
+    const value = document.getElementById("token-transfer-value").value;
+    const tx = await contract["transferFrom(uint256,address,uint256)"](
+      token,
+      address,
+      value
+    );
+    const receipt = await tx.wait();
+
+    // console.log(JSON.stringify(receipt));
+    if (receipt.status == 1) {
+      toggleToast(
+        true,
+        `A value of ${value} from token ${token} has been transferred to account ${address}.`
+      );
+    } else {
+      toggleToast(
+        false,
+        `A value of ${value} from token ${token} failed to be transferred to account ${address}.`
+      );
+    }
+  });
+// Get the owner of a token
+document
+  .getElementById("token-owner-submit")
+  .addEventListener("click", async function () {
+    const token = document.getElementById("token-owner-token").value;
+    const owner = await contract.ownerOf(token);
+
+    document.getElementById("token-owner-result").innerText = owner;
+  });
+// Get the slot of a token
+document
+  .getElementById("token-slot-submit")
+  .addEventListener("click", async function () {
+    const token = document.getElementById("token-slot-token").value;
+    const slot = await contract.slotOf(token);
+
+    document.getElementById("token-slot-result").innerText = slot;
+  });
+// Get and display the token URI
+document
+  .getElementById("token-uri-submit")
+  .addEventListener("click", async function () {
+    const slot = document.getElementById("token-uri-token").value;
+    const tokenURI = await contract.tokenURI(slot);
+
+    toggleModal("Token URI", tokenURI);
   });
