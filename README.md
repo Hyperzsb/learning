@@ -8,6 +8,7 @@ It is kind of a monorepo but with loose organization.
 
 - [Blockchain](https://github.com/Hyperzsb/learning/tree/main/blockchain)
 - [Go](https://github.com/Hyperzsb/learning/tree/main/go)
+- [Java](https://github.com/Hyperzsb/learning/tree/main/java)
 
 ## License
 
