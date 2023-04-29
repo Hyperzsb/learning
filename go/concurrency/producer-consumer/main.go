@@ -1,8 +1,9 @@
 package main
 
-//import spsc "concurrency/producerconsumer/single-producer-single-consumer"
-import spmc "concurrency/producerconsumer/single-producer-multiple-consumer"
+import (
+	"concurrency/producerconsumer/spmc"
+)
 
 func main() {
-	spmc.SingleProducerMultipleConsumer()
+	spmc.SPMC()
 }
