@@ -1,9 +1,9 @@
 package main
 
 import (
-	"concurrency/producerconsumer/spmc"
+	"concurrency/producerconsumer/mpmc"
 )
 
 func main() {
-	spmc.SPMC()
+	mpmc.MPMCSemaphore()
 }
