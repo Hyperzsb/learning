@@ -24,10 +24,10 @@ You can follow these steps to dig into the Go in a reasonable way.
 It also covers lots of well-known libraries and frameworks you need to use in your future study and work.
 
 [Go by Example](https://gobyexample.com/) is a really, really good tutorial for beginners, covering almost every important concept of Go.
-Most importantly, it has constant updates, which means you can learn new things after new releases of Go.
+Most importantly, it has constant updates, which means you can learn new things after the new releases of Go.
 
 [Gophercises](https://gophercises.com/) is a wonderful online course providing useful and meaningful side project ideas for learning Go.
-Maybe the contents and solutions there are little out of date, but it still provides some guidelines of how to become a "senior" (sort of) Go programmer.
+Maybe the contents and solutions there are a little out of date, but it still provides some guidelines on how to become a "senior" (sort of) Go programmer.
 
-If you like learning new things by books, you may find these [Go Books](https://github.com/dariubs/GoBooks) helpful.
-This list includes many books, from entry level to advance level, teaching you how to code in Go more efficient, robust, and secure.
+If you like learning new things through books, you may find these [Go Books](https://github.com/dariubs/GoBooks) helpful.
+This list includes many books, from entry level to advanced level, teaching you how to code in Go more efficiently, robustly, and securely.
