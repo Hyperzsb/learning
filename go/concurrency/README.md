@@ -18,4 +18,4 @@ Getting familiar with these problems is a great start to dive into the concurren
   (In particular, we want to prevent more than one thread modifying the shared resource simultaneously and allow for two or more readers to access the shared resource at the same time). [*Wikipedia*](https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem)
 - [Sleeping Barber Problem](sleeping-barber): Barber shop with one barber, one barber chair and N chairs to wait in. 
   When no customers the barber goes to sleep in barber chair and must be woken when a customer comes in. 
-  When barber is cutting hair new customers take empty seats to wait, or leave if no vacancy. [Wikipedia](https://en.wikipedia.org/wiki/Sleeping_barber_problem)
+  When barber is cutting hair new customers take empty seats to wait, or leave if no vacancy. [*Wikipedia*](https://en.wikipedia.org/wiki/Sleeping_barber_problem)
