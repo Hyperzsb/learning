@@ -15,19 +15,7 @@ const (
 	maxSleepDuration = 1000
 )
 
-func main() {
-	buffer := 0
-
-	writers := make([]writer.Writer, writerNum)
-	for i := range writers {
-		writers[i] = writer.NewWriter(i, &buffer)
-	}
-
-	readers := make([]reader.Reader, readerNum)
-	for i := range readers {
-		readers[i] = reader.NewReader(i, &buffer)
-	}
-
+func withMutex(writers []writer.Writer, readers []reader.Reader) {
 	wg := sync.WaitGroup{}
 	writeMutex, readMutex := sync.Mutex{}, sync.Mutex{}
 	readerCnt := 0
@@ -92,4 +80,67 @@ func main() {
 	}
 
 	wg.Wait()
+}
+
+func withRWMutex(writers []writer.Writer, readers []reader.Reader) {
+	wg := sync.WaitGroup{}
+	rwm := sync.RWMutex{}
+	done := false
+
+	go func() {
+		wgw := sync.WaitGroup{}
+
+		for i := range writers {
+			wg.Add(1)
+			wgw.Add(1)
+			id := i
+			go func() {
+				defer wg.Done()
+				defer wgw.Done()
+
+				for i := 0; i < writingNum; i++ {
+					rwm.Lock()
+					writers[id].Write(i)
+					rwm.Unlock()
+					time.Sleep(time.Duration(rand.Intn(maxSleepDuration)) * time.Millisecond)
+				}
+			}()
+		}
+
+		wgw.Wait()
+		done = true
+	}()
+
+	for i := range readers {
+		wg.Add(1)
+		id := i
+		go func() {
+			defer wg.Done()
+			for !done {
+				rwm.RLock()
+				readers[id].Read()
+				rwm.RUnlock()
+				time.Sleep(time.Duration(rand.Intn(maxSleepDuration)) * time.Millisecond)
+			}
+		}()
+	}
+
+	wg.Wait()
+}
+
+func main() {
+	buffer := 0
+
+	writers := make([]writer.Writer, writerNum)
+	for i := range writers {
+		writers[i] = writer.NewWriter(i, &buffer)
+	}
+
+	readers := make([]reader.Reader, readerNum)
+	for i := range readers {
+		readers[i] = reader.NewReader(i, &buffer)
+	}
+
+	//withMutex(writers, readers)
+	withRWMutex(writers, readers)
 }
