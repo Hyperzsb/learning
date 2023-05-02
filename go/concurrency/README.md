@@ -19,3 +19,5 @@ Getting familiar with these problems is a great start to dive into the concurren
 - [Sleeping Barber Problem](sleeping-barber): Barber shop with one barber, one barber chair and N chairs to wait in. 
   When no customers the barber goes to sleep in barber chair and must be woken when a customer comes in. 
   When barber is cutting hair new customers take empty seats to wait, or leave if no vacancy. [*Wikipedia*](https://en.wikipedia.org/wiki/Sleeping_barber_problem)
+
+You may either follow the Wikipedia or this [tutorial](https://www.geeksforgeeks.org/classical-problems-of-synchronization-with-semaphore-solution/) to learn how to solve these problems in various ways.
