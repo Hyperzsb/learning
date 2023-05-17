@@ -1,0 +1,11 @@
+{{define "base"}}
+<!doctype html>
+<html lang="en">
+<head>
+    <title>{{block "Title" .}}{{end}}</title>
+</head>
+<body>
+    <div>{{block "Content" .}}{{end}}</div>
+</body>
+</html>
+{{end}}
