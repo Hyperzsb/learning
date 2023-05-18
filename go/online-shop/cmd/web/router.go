@@ -5,8 +5,9 @@ import (
 	"net/http"
 )
 
-func (app *application) route() http.Handler {
+func (app *application) router() http.Handler {
 	mux := chi.NewRouter()
+
 	mux.Get("/terminal", app.terminal)
 	mux.Get("/about", app.about)
 

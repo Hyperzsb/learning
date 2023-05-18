@@ -16,13 +16,11 @@ const (
 )
 
 type configuration struct {
-	port int
-	env  string
-	api  string
-	db   struct {
-		dsn string
-	}
-	strip struct {
+	host   string
+	port   int
+	env    string
+	api    string
+	stripe struct {
 		key    string
 		secret string
 	}
@@ -41,15 +39,15 @@ type application struct {
 
 func (app *application) serve() error {
 	server := &http.Server{
-		Addr:              fmt.Sprintf(":%d", app.config.port),
-		Handler:           app.route(),
+		Addr:              fmt.Sprintf("%s:%d", app.config.host, app.config.port),
+		Handler:           app.router(),
 		ReadTimeout:       10 * time.Second,
 		ReadHeaderTimeout: 10 * time.Second,
 		WriteTimeout:      10 * time.Second,
 		IdleTimeout:       30 * time.Second,
 	}
 
-	app.loggers.info.Printf("Starting the server in %s mode on port %d\n", app.config.env, app.config.port)
+	app.loggers.info.Printf("Starting the Web server in %s mode on %s:%d\n", app.config.env, app.config.host, app.config.port)
 
 	return server.ListenAndServe()
 }
@@ -57,14 +55,14 @@ func (app *application) serve() error {
 func main() {
 	config := configuration{}
 
+	flag.StringVar(&config.host, "host", "127.0.0.1", "host to listen on")
 	flag.IntVar(&config.port, "port", 8080, "port to listen on")
 	flag.StringVar(&config.env, "environment", "dev", "serving mode")
 	flag.StringVar(&config.api, "api", "localhost:8000", "url to api")
-	flag.StringVar(&config.db.dsn, "dsn", "localhost:3306", "data source name")
 	flag.Parse()
 
-	config.strip.key = os.Getenv("STRIP_KEY")
-	config.strip.secret = os.Getenv("STRIP_SECRET")
+	config.stripe.key = os.Getenv("STRIPE_KEY")
+	config.stripe.secret = os.Getenv("STRIPE_SECRET")
 
 	app := &application{
 		version: version,
