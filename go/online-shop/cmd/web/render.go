@@ -10,7 +10,7 @@ import (
 type templateData struct {
 	Version    string
 	CSSVersion string
-	StripeKey  string
+	Data       map[string]interface{}
 }
 
 //go:embed templates
@@ -21,8 +21,9 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, page stri
 		td = &templateData{
 			Version:    version,
 			CSSVersion: cssVersion,
-			StripeKey:  app.config.stripe.key,
+			Data:       make(map[string]interface{}),
 		}
+		td.Data["StripeKey"] = app.config.stripe.key
 	}
 
 	var tmpl *template.Template

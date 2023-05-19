@@ -46,7 +46,7 @@
 {{define "JavaScript"}}
     <script src="https://js.stripe.com/v3"></script>
     <script>
-        const stripe = Stripe('{{.StripeKey}}');
+        const stripe = Stripe('{{index .Data "StripeKey"}}');
 
         const elements = stripe.elements({
             locale: 'en'
