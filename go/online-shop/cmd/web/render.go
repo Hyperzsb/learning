@@ -8,8 +8,9 @@ import (
 )
 
 type templateData struct {
-	version    string
-	cssVersion string
+	Version    string
+	CSSVersion string
+	StripeKey  string
 }
 
 //go:embed templates
@@ -17,7 +18,11 @@ var templateFS embed.FS
 
 func (app *application) render(w http.ResponseWriter, r *http.Request, page string, td *templateData) error {
 	if td == nil {
-		td = &templateData{}
+		td = &templateData{
+			Version:    version,
+			CSSVersion: cssVersion,
+			StripeKey:  app.config.stripe.key,
+		}
 	}
 
 	var tmpl *template.Template

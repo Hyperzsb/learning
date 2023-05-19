@@ -5,6 +5,85 @@
 {{end}}
 
 {{define "Content"}}
-    <h1>Virtual Terminal</h1>
-    <p>This is a virtual terminal.</p>
+    <div class="row text-center">
+        <div class="col-6 offset-3">
+            <h1>Virtual Terminal</h1>
+            <p>This is a virtual terminal, you can make your payment here.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6 offset-3">
+            <form action="/api/pay" method="post" name="payment-form" id="payment-form" class="needs-validation">
+                <div class="mb-3">
+                    <label for="payment-amount" class="form-label">Amount</label>
+                    <input type="text" id="payment-amount" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="payment-holder-name" class="form-label">Card Holder Name</label>
+                    <input type="text" id="payment-holder-name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="payment-holder-email" class="form-label">Card Holder Email</label>
+                    <input type="email" id="payment-holder-email" class="form-control" required>
+                    <div id="email-help" class="form-text">We'll never share your email with anyone else.</div>
+                </div>
+                <div class="mb-3">
+                    <label for="payment-card" class="form-label">Credit Card</label>
+                    <div id="payment-card" class="form-control"></div>
+                    <div id="payment-card-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
+                </div>
+                <button type="submit" id="payment-submit" class="btn btn-primary">Submit</button>
+                <div id="payment-spinner" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{{end}}
+
+{{define "JavaScript"}}
+    <script src="https://js.stripe.com/v3"></script>
+    <script>
+        const stripe = Stripe('{{.StripeKey}}');
+
+        const elements = stripe.elements({
+            locale: 'en'
+        });
+
+        const card = elements.create('card', {
+            style: {
+                base: {
+                    fontSize: '16px',
+                    lineHeight: '24px'
+                }
+            }
+        });
+        card.mount('#payment-card');
+
+        card.addEventListener('change', function (event) {
+            const errorMsg = document.getElementById('payment-card-error');
+            if (event.error) {
+                errorMsg.classList.remove('d-none');
+                errorMsg.innerText = event.error.message;
+            } else {
+                errorMsg.classList.add('d-none');
+                errorMsg.innerText = '';
+            }
+        });
+
+        document.getElementById('payment-submit').addEventListener('click', function () {
+            const form = document.getElementById('payment-form');
+            if (form.checkValidity() === false) {
+                this.event.preventDefault();
+                this.event.stopPropagation();
+                form.classList.add("was-validated");
+                return;
+            }
+            form.classList.add("was-validated");
+            document.getElementById('payment-submit').classList.add('d-none');
+            document.getElementById('payment-spinner').classList.remove('d-none');
+        });
+    </script>
 {{end}}
