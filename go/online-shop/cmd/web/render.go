@@ -10,21 +10,30 @@ import (
 type templateData struct {
 	Version    string
 	CSSVersion string
+	API        string
 	Data       map[string]interface{}
+}
+
+func (app *application) initDefaultTemplateData(td *templateData) *templateData {
+	if td == nil {
+		td = &templateData{
+			Version:    version,
+			CSSVersion: cssVersion,
+			API:        app.config.api,
+			Data:       make(map[string]interface{}),
+		}
+
+		td.Data["StripeKey"] = app.config.stripe.key
+	}
+
+	return td
 }
 
 //go:embed templates
 var templateFS embed.FS
 
 func (app *application) render(w http.ResponseWriter, r *http.Request, page string, td *templateData) error {
-	if td == nil {
-		td = &templateData{
-			Version:    version,
-			CSSVersion: cssVersion,
-			Data:       make(map[string]interface{}),
-		}
-		td.Data["StripeKey"] = app.config.stripe.key
-	}
+	td = app.initDefaultTemplateData(td)
 
 	var tmpl *template.Template
 	var err error

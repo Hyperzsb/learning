@@ -13,7 +13,9 @@
     </div>
     <div class="row">
         <div class="col-6 offset-3">
-            <form action="/api/pay" method="post" name="payment-form" id="payment-form" class="needs-validation">
+            <form action="/payment" method="post" name="payment-form" id="payment-form" class="needs-validation">
+                <div id="payment-success" class="alert alert-success mb-3 d-none" role="alert"></div>
+                <div id="payment-error" class="alert alert-danger mb-3 d-none" role="alert"></div>
                 <div class="mb-3">
                     <label for="payment-amount" class="form-label">Amount</label>
                     <input type="text" id="payment-amount" class="form-control" required>
@@ -58,7 +60,8 @@
                     fontSize: '16px',
                     lineHeight: '24px'
                 }
-            }
+            },
+            hidePostalCode: true
         });
         card.mount('#payment-card');
 
@@ -73,17 +76,96 @@
             }
         });
 
-        document.getElementById('payment-submit').addEventListener('click', function () {
+        document.getElementById('payment-submit').addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
             const form = document.getElementById('payment-form');
+            form.classList.add("was-validated");
+
             if (form.checkValidity() === false) {
-                this.event.preventDefault();
-                this.event.stopPropagation();
-                form.classList.add("was-validated");
                 return;
             }
-            form.classList.add("was-validated");
-            document.getElementById('payment-submit').classList.add('d-none');
-            document.getElementById('payment-spinner').classList.remove('d-none');
+
+            hidePaymentSubmit();
+
+            // Send request to the backend to get the payment intent
+            const data = {
+                currency: "usd",
+                amount: (parseFloat(document.getElementById('payment-amount').value.toString()) * 100).toString()
+            }
+
+            fetch('http://{{.API}}/payment', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }).then(response => response.json()).then(data => {
+                stripe.confirmCardPayment(data.client_secret, {
+                    payment_method: {
+                        card: card,
+                        billing_details: {
+                            name: document.getElementById("payment-holder-name").value,
+                        }
+                    }
+                }).then(response => {
+                    if (response.error) {
+                        displayPaymentError(response.error.message);
+                        showPaymentSubmit();
+                    } else {
+                        displayPaymentSuccess();
+                    }
+                }).catch(error => {
+                    displayPaymentError('Invalid response from payment gateway');
+                    showPaymentSubmit();
+                })
+            });
         });
+    </script>
+    <script>
+        const paymentSubmit = document.getElementById('payment-submit');
+        const paymentSpinner = document.getElementById('payment-spinner');
+        const paymentSuccess = document.getElementById('payment-success');
+        const paymentError = document.getElementById('payment-error');
+
+        function showPaymentSubmit() {
+            if (paymentSubmit.classList.contains('d-none')) {
+                paymentSubmit.classList.remove('d-none');
+            }
+            if (!paymentSpinner.classList.contains('d-none')) {
+                paymentSpinner.classList.add('d-none');
+            }
+        }
+
+        function hidePaymentSubmit() {
+            if (!paymentSubmit.classList.contains('d-none')) {
+                paymentSubmit.classList.add('d-none');
+            }
+            if (paymentSpinner.classList.contains('d-none')) {
+                paymentSpinner.classList.remove('d-none');
+            }
+        }
+
+        function displayPaymentSuccess(msg = 'Payment succeeded') {
+            if (!paymentError.classList.contains('d-none')) {
+                paymentError.classList.add('d-none');
+            }
+            paymentSuccess.innerText = msg;
+            if (paymentSuccess.classList.contains('d-none')) {
+                paymentSuccess.classList.remove('d-none');
+            }
+        }
+
+        function displayPaymentError(msg = 'Payment failed') {
+            if (!paymentSuccess.classList.contains('d-none')) {
+                paymentSuccess.classList.add('d-none');
+            }
+            paymentError.innerText = msg;
+            if (paymentError.classList.contains('d-none')) {
+                paymentError.classList.remove('d-none');
+            }
+        }
     </script>
 {{end}}

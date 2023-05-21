@@ -58,7 +58,7 @@ func main() {
 	flag.StringVar(&config.host, "host", "127.0.0.1", "host to listen on")
 	flag.IntVar(&config.port, "port", 8080, "port to listen on")
 	flag.StringVar(&config.env, "environment", "dev", "serving mode")
-	flag.StringVar(&config.api, "api", "localhost:8000", "url to api")
+	flag.StringVar(&config.api, "api", "127.0.0.1:8000", "url to api")
 	flag.Parse()
 
 	config.stripe.key = os.Getenv("STRIPE_KEY")
