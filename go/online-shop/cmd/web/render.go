@@ -24,6 +24,28 @@ func (app *application) initDefaultTemplateData(td *templateData) *templateData 
 		}
 
 		td.Data["StripeKey"] = app.config.stripe.key
+
+		return td
+	}
+
+	if td.Version == "" {
+		td.Version = version
+	}
+
+	if td.CSSVersion == "" {
+		td.CSSVersion = cssVersion
+	}
+
+	if td.API == "" {
+		td.API = app.config.api
+	}
+
+	if td.Data == nil {
+		td.Data = make(map[string]interface{})
+	}
+
+	if _, ok := td.Data["StripeKey"]; !ok {
+		td.Data["StripeKey"] = app.config.stripe.key
 	}
 
 	return td

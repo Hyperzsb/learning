@@ -1,0 +1,43 @@
+{{template "base" .}}
+
+{{define "Title"}}
+    Receipt - {{index .Data "ID"}}
+{{end}}
+
+{{define "Content"}}
+    <div class="container-fluid min-vh-100">
+        <div class="row my-3">
+            <div class="col text-center">
+                <h1>Receipt</h1>
+                <p>This is your payment receipt. You can print and save it.</p>
+            </div>
+        </div>
+        <div class="row my-3">
+            <div class="col-6 offset-3">
+                <p>
+                    <span class="fw-bold">ID: </span>
+                    <span>{{index .Data "ID"}}</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Method: </span>
+                    <span>{{index .Data "Method"}}</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Currency: </span>
+                    <span>{{index .Data "Currency"}}</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Amount: </span>
+                    <span>{{index .Data "Amount"}}</span>
+                </p>
+                <p>
+                    <span class="fw-bold">Email: </span>
+                    <span>{{index .Data "Email"}}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "JavaScript"}}
+{{end}}
