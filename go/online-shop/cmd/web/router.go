@@ -8,7 +8,7 @@ import (
 func (app *application) router() http.Handler {
 	mux := chi.NewRouter()
 
-	mux.Get("/terminal", app.terminal)
+	mux.Get("/checkout", app.checkout)
 	mux.Get("/about", app.about)
 
 	return mux

@@ -71,9 +71,9 @@ func main() {
 			debug *log.Logger
 			error *log.Logger
 		}{
-			info:  log.New(os.Stdout, "[INFO]  ", log.Ldate|log.Ltime),
-			debug: log.New(os.Stdout, "[DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile),
-			error: log.New(os.Stderr, "[ERROR] ", log.Ldate|log.Ltime|log.Lshortfile),
+			info:  log.New(os.Stdout, "[API|INFO]  ", log.Ldate|log.Ltime),
+			debug: log.New(os.Stdout, "[API|DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile),
+			error: log.New(os.Stderr, "[API|ERROR] ", log.Ldate|log.Ltime|log.Lshortfile),
 		},
 	}
 

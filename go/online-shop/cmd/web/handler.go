@@ -2,10 +2,10 @@ package main
 
 import "net/http"
 
-func (app *application) terminal(w http.ResponseWriter, r *http.Request) {
+func (app *application) checkout(w http.ResponseWriter, r *http.Request) {
 	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
 
-	if err := app.render(w, r, "terminal", nil); err != nil {
+	if err := app.render(w, r, "checkout", nil); err != nil {
 		return
 	}
 }
