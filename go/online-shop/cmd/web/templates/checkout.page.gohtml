@@ -5,42 +5,44 @@
 {{end}}
 
 {{define "Content"}}
-    <div class="row text-center">
-        <div class="col-6 offset-3">
-            <h1>Checkout</h1>
-            <p>This is a virtual checkout, you can make your payment here.</p>
+    <div class="container-fluid min-vh-100">
+        <div class="row text-center">
+            <div class="col-6 offset-3">
+                <h1>Checkout</h1>
+                <p>This is a virtual checkout, you can make your payment here.</p>
+            </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-6 offset-3">
-            <form action="/payment" method="post" name="payment-form" id="payment-form" class="needs-validation">
-                <div id="payment-success" class="alert alert-success mb-3 d-none" role="alert"></div>
-                <div id="payment-error" class="alert alert-danger mb-3 d-none" role="alert"></div>
-                <div class="mb-3">
-                    <label for="payment-amount" class="form-label">Amount</label>
-                    <input type="text" id="payment-amount" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="payment-holder-name" class="form-label">Card Holder Name</label>
-                    <input type="text" id="payment-holder-name" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="payment-holder-email" class="form-label">Card Holder Email</label>
-                    <input type="email" id="payment-holder-email" class="form-control" required>
-                    <div id="email-help" class="form-text">We'll never share your email with anyone else.</div>
-                </div>
-                <div class="mb-3">
-                    <label for="payment-card" class="form-label">Card Detail</label>
-                    <div id="payment-card" class="form-control"></div>
-                    <div id="payment-card-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
-                </div>
-                <button type="submit" id="payment-submit" class="btn btn-primary">Submit</button>
-                <div id="payment-spinner" class="text-center d-none">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+        <div class="row">
+            <div class="col-6 offset-3">
+                <form action="/payment" method="post" name="payment-form" id="payment-form" class="needs-validation">
+                    <div id="payment-success" class="alert alert-success mb-3 d-none" role="alert"></div>
+                    <div id="payment-error" class="alert alert-danger mb-3 d-none" role="alert"></div>
+                    <div class="mb-3">
+                        <label for="payment-amount" class="form-label">Amount</label>
+                        <input type="text" id="payment-amount" class="form-control" required>
                     </div>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label for="payment-holder-name" class="form-label">Card Holder Name</label>
+                        <input type="text" id="payment-holder-name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="payment-holder-email" class="form-label">Card Holder Email</label>
+                        <input type="email" id="payment-holder-email" class="form-control" required>
+                        <div id="email-help" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="payment-card" class="form-label">Card Detail</label>
+                        <div id="payment-card" class="form-control"></div>
+                        <div id="payment-card-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
+                    </div>
+                    <button type="submit" id="payment-submit" class="btn btn-primary">Submit</button>
+                    <div id="payment-spinner" class="text-center d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 {{end}}
