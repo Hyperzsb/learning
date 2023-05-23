@@ -1,1 +1,4 @@
 .env
+
+cmd/web/static/*
+!cmd/web/static/.gitkeep
