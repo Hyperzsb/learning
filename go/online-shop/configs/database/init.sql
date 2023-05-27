@@ -4,6 +4,7 @@ drop table if exists orders;
 drop table if exists order_statuses;
 drop table if exists transactions;
 drop table if exists transaction_statuses;
+drop table if exists customers;
 drop table if exists products;
 
 -- Products table
@@ -21,6 +22,18 @@ create table products
 );
 insert into products (id, name, description, price, inventory)
 values (1, 'Product 1', 'This is the first product on this platform', 10000, 100);
+
+-- Customers table
+-- drop table if exists customers;
+create table customers
+(
+    id          int auto_increment,
+    name        varchar(100),
+    email       varchar(100),
+    create_time timestamp default current_timestamp,
+    update_time timestamp default current_timestamp on update current_timestamp,
+    primary key (id)
+);
 
 -- Transaction Statuses table
 -- drop table if exists transaction_statuses;
@@ -77,6 +90,7 @@ create table orders
     id             int auto_increment,
     product_id     int,
     transaction_id int,
+    customer_id    int,
     status_id      int,
     quantity       int,
     amount         int,
@@ -85,6 +99,7 @@ create table orders
     primary key (id),
     foreign key (product_id) references products (id) on update cascade on delete cascade,
     foreign key (transaction_id) references transactions (id) on update cascade on delete cascade,
+    foreign key (customer_id) references customers (id) on update cascade on delete cascade,
     foreign key (status_id) references order_statuses (id) on update cascade on delete cascade
 );
 

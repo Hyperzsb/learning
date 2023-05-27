@@ -13,6 +13,7 @@ type Order struct {
 	ID            int       `json:"id"`
 	ProductID     int       `json:"product_id"`
 	TransactionID int       `json:"transaction_id"`
+	CustomerID    int       `json:"customer_id"`
 	StatusID      int       `json:"status_id"`
 	Quantity      int       `json:"quantity"`
 	Amount        int       `json:"amount"`
