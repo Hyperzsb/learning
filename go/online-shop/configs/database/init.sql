@@ -1,8 +1,16 @@
--- Products table
+-- Drop all tables in dependency order
+drop table if exists users;
+drop table if exists orders;
+drop table if exists order_statuses;
+drop table if exists transactions;
+drop table if exists transaction_statuses;
 drop table if exists products;
+
+-- Products table
+-- drop table if exists products;
 create table products
 (
-    id          int,
+    id          int auto_increment,
     name        varchar(100),
     description varchar(1000),
     price       int, -- Without decimals, eg price 10000 = 100.00 in some currency
@@ -15,10 +23,10 @@ insert into products (id, name, description, price, inventory)
 values (1, 'Product 1', 'This is the first product on this platform', 10000, 100);
 
 -- Transaction Statuses table
-drop table if exists transaction_statuses;
+-- drop table if exists transaction_statuses;
 create table transaction_statuses
 (
-    id          int,
+    id          int auto_increment,
     status      varchar(20),
     create_time timestamp default current_timestamp,
     update_time timestamp default current_timestamp on update current_timestamp,
@@ -32,10 +40,10 @@ VALUES (1, 'Pending'),
        (5, 'Partially-Refunded');
 
 -- Transactions table
-drop table if exists transactions;
+-- drop table if exists transactions;
 create table transactions
 (
-    id          int,
+    id          int auto_increment,
     currency    varchar(3),
     amount      int, -- Without decimals, eg price 10000 = 100.00 in some currency
     card        varchar(4),
@@ -48,10 +56,10 @@ create table transactions
 );
 
 -- Order Statuses table
-drop table if exists order_statuses;
+-- drop table if exists order_statuses;
 create table order_statuses
 (
-    id          int,
+    id          int auto_increment,
     status      varchar(20),
     create_time timestamp default current_timestamp,
     update_time timestamp default current_timestamp on update current_timestamp,
@@ -63,10 +71,10 @@ values (1, 'Cancelled'),
        (3, 'Refunded');
 
 -- Order table
-drop table if exists orders;
+-- drop table if exists orders;
 create table orders
 (
-    id             int,
+    id             int auto_increment,
     product_id     int,
     transaction_id int,
     status_id      int,
@@ -81,10 +89,10 @@ create table orders
 );
 
 -- User table
-drop table if exists users;
+-- drop table if exists users;
 create table users
 (
-    id          int,
+    id          int auto_increment,
     first_name  varchar(50),
     last_name   varchar(50),
     email       varchar(100),
