@@ -17,6 +17,13 @@ func (app *application) router() http.Handler {
 		MaxAge:           300,
 	}))
 
+	mux.Route("/product", func(r chi.Router) {
+		r.Post("/", app.createProduct)
+		r.Route("/{id}", func(r chi.Router) {
+			r.Get("/", app.getProductByID)
+		})
+	})
+
 	mux.Post("/payment", app.createPaymentIntent)
 
 	return mux

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"onlineshop/internal/model"
 	"os"
 	"time"
 )
@@ -34,9 +35,16 @@ type application struct {
 		debug *log.Logger
 		error *log.Logger
 	}
+	model *model.Model
 }
 
 func (app *application) serve() error {
+	var err error
+	app.model, err = model.New(app.config.db.dsn)
+	if err != nil {
+		return err
+	}
+
 	server := &http.Server{
 		Addr:              fmt.Sprintf("%s:%d", app.config.host, app.config.port),
 		Handler:           app.router(),
@@ -57,9 +65,9 @@ func main() {
 	flag.StringVar(&config.host, "host", "127.0.0.1", "host to listen on")
 	flag.IntVar(&config.port, "port", 8000, "port to listen on")
 	flag.StringVar(&config.env, "environment", "dev", "serving mode")
-	flag.StringVar(&config.db.dsn, "dsn", "localhost:3306", "data source name")
 	flag.Parse()
 
+	config.db.dsn = os.Getenv("API_DSN")
 	config.stripe.key = os.Getenv("STRIPE_KEY")
 	config.stripe.secret = os.Getenv("STRIPE_SECRET")
 
@@ -78,6 +86,7 @@ func main() {
 	}
 
 	if err := app.serve(); err != nil {
+		_ = app.model.Close()
 		app.loggers.error.Fatal(err)
 	}
 }
