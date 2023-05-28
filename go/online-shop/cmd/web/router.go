@@ -8,6 +8,7 @@ import (
 func (app *application) router() http.Handler {
 	mux := chi.NewRouter()
 
+	mux.Get("/", app.home)
 	mux.Get("/checkout", app.checkout)
 	mux.Post("/receipt", app.receipt)
 	mux.Get("/about", app.about)

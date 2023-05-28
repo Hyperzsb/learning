@@ -11,6 +11,7 @@ type templateData struct {
 	Version    string
 	CSSVersion string
 	API        string
+	Funcs      template.FuncMap
 	Data       map[string]interface{}
 }
 
@@ -20,6 +21,7 @@ func (app *application) initDefaultTemplateData(td *templateData) *templateData 
 			Version:    version,
 			CSSVersion: cssVersion,
 			API:        app.config.api,
+			Funcs:      template.FuncMap{},
 			Data:       make(map[string]interface{}),
 		}
 
@@ -38,6 +40,10 @@ func (app *application) initDefaultTemplateData(td *templateData) *templateData 
 
 	if td.API == "" {
 		td.API = app.config.api
+	}
+
+	if td.Funcs == nil {
+		td.Funcs = template.FuncMap{}
 	}
 
 	if td.Data == nil {
@@ -61,7 +67,7 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, page stri
 	var err error
 
 	if t, ok := app.templates[page]; !ok {
-		tmpl, err = app.parse(page)
+		tmpl, err = app.parse(page, td.Funcs)
 		if err != nil {
 			app.loggers.error.Println(err)
 			return err
@@ -78,11 +84,11 @@ func (app *application) render(w http.ResponseWriter, r *http.Request, page stri
 	return nil
 }
 
-func (app *application) parse(page string) (*template.Template, error) {
+func (app *application) parse(page string, funcs template.FuncMap) (*template.Template, error) {
 	var tmpl *template.Template
 	var err error
 
-	tmpl, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).ParseFS(templateFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
+	tmpl, err = template.New(fmt.Sprintf("%s.page.gohtml", page)).Funcs(funcs).ParseFS(templateFS, "templates/base.layout.gohtml", fmt.Sprintf("templates/%s.page.gohtml", page))
 	if err != nil {
 		app.loggers.error.Println(err)
 		return nil, err

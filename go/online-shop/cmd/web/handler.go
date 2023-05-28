@@ -2,6 +2,15 @@ package main
 
 import "net/http"
 
+func (app *application) home(w http.ResponseWriter, r *http.Request) {
+	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
+
+	if err := app.render(w, r, "home", nil); err != nil {
+		app.loggers.error.Println(err)
+		return
+	}
+}
+
 func (app *application) checkout(w http.ResponseWriter, r *http.Request) {
 	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
 
