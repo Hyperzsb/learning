@@ -47,8 +47,8 @@ create table transaction_statuses
 );
 insert into transaction_statuses (id, status)
 VALUES (1, 'Pending'),
-       (2, 'Cleared'),
-       (3, 'Declined'),
+       (2, 'Declined'),
+       (3, 'Cleared'),
        (4, 'Refunded'),
        (5, 'Partially-Refunded');
 
@@ -81,9 +81,11 @@ create table order_statuses
     primary key (id)
 );
 insert into order_statuses (id, status)
-values (1, 'Cancelled'),
-       (2, 'Cleared'),
-       (3, 'Refunded');
+values (1, 'Pending'),
+       (2, 'Cancelled'),
+       (3, 'Cleared'),
+       (4, 'Refunded'),
+       (5, 'Partially-Refunded');
 
 -- Order table
 -- drop table if exists orders;
