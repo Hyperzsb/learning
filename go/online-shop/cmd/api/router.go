@@ -20,7 +20,9 @@ func (app *application) router() http.Handler {
 	mux.Route("/product", func(r chi.Router) {
 		r.Post("/", app.createProduct)
 		r.Route("/{id}", func(r chi.Router) {
-			r.Get("/", app.getProductByID)
+			r.Get("/", app.getProduct)
+			r.Put("/", app.updateProduct)
+			r.Delete("/", app.deleteProduct)
 		})
 	})
 

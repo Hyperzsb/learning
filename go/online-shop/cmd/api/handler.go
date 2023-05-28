@@ -87,7 +87,7 @@ func (app *application) createProduct(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(responseJSON)
 }
 
-func (app *application) getProductByID(w http.ResponseWriter, r *http.Request) {
+func (app *application) getProduct(w http.ResponseWriter, r *http.Request) {
 	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
 
 	rawID := chi.URLParam(r, "id")
@@ -98,8 +98,14 @@ func (app *application) getProductByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	product, err := app.model.GetProductById(id)
+	product, err := app.model.GetProduct(id)
 	if err != nil {
+		if _, ok := err.(*model.EmptyQueryError); ok {
+			app.loggers.error.Println(err)
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
+
 		app.loggers.error.Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -115,4 +121,86 @@ func (app *application) getProductByID(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(productJSON)
+}
+
+func (app *application) updateProduct(w http.ResponseWriter, r *http.Request) {
+	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
+
+	type productResponse struct {
+		CNT int `json:"cnt"`
+	}
+
+	rawID := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	product := model.Product{}
+	err = json.NewDecoder(r.Body).Decode(&product)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	cnt, err := app.model.UpdateProduct(id, product)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	response := productResponse{
+		CNT: cnt,
+	}
+	responseJSON, err := json.Marshal(response)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(responseJSON)
+}
+
+func (app *application) deleteProduct(w http.ResponseWriter, r *http.Request) {
+	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
+
+	type productResponse struct {
+		CNT int `json:"cnt"`
+	}
+
+	rawID := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(rawID)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	cnt, err := app.model.DeleteProduct(id)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	response := productResponse{
+		CNT: cnt,
+	}
+	responseJSON, err := json.Marshal(response)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(responseJSON)
 }

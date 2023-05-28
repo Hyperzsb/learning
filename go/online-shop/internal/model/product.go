@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -41,7 +42,7 @@ func (m *Model) CreateProduct(p Product) (int, error) {
 	return int(id), nil
 }
 
-func (m *Model) GetProductById(id int) (Product, error) {
+func (m *Model) GetProduct(id int) (Product, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
@@ -64,8 +65,61 @@ func (m *Model) GetProductById(id int) (Product, error) {
 	)
 
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return product, &EmptyQueryError{err.Error()}
+		}
+
 		return product, err
 	}
 
 	return product, nil
+}
+
+func (m *Model) UpdateProduct(id int, p Product) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	statement := `
+		update products
+		set name = ?, description = ?, price = ?, inventory = ?
+		where id = ?
+	`
+	result, err := m.db.ExecContext(ctx, statement,
+		p.Name,
+		p.Description,
+		p.Price,
+		p.Inventory,
+		id,
+	)
+	if err != nil {
+		return -1, err
+	}
+
+	cnt, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(cnt), nil
+}
+
+func (m *Model) DeleteProduct(id int) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	statement := `
+		delete from products
+		where id = ?
+	`
+	result, err := m.db.ExecContext(ctx, statement, id)
+	if err != nil {
+		return -1, err
+	}
+
+	cnt, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(cnt), err
 }
