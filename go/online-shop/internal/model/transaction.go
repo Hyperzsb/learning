@@ -10,12 +10,14 @@ type TransactionStatus struct {
 }
 
 type Transaction struct {
-	ID         int       `json:"id"`
-	Currency   string    `json:"currency"`
-	Amount     int       `json:"amount"`
-	Card       string    `json:"card"`
-	BankCode   string    `json:"bank_code"`
-	StatusID   int       `json:"status_id"`
-	CreateTime time.Time `json:"-"`
-	UpdateTime time.Time `json:"-"`
+	ID            int       `json:"id"`
+	PaymentIntent string    `json:"payment_intent"`
+	PaymentMethod string    `json:"payment_method"`
+	Currency      string    `json:"currency"`
+	Amount        int       `json:"amount"`
+	Card          string    `json:"card"`
+	BankCode      string    `json:"bank_code"`
+	StatusID      int       `json:"status_id"`
+	CreateTime    time.Time `json:"-"`
+	UpdateTime    time.Time `json:"-"`
 }
