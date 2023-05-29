@@ -11,6 +11,15 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (app *application) login(w http.ResponseWriter, r *http.Request) {
+	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
+
+	if err := app.render(w, r, "login", nil); err != nil {
+		app.loggers.error.Println(err)
+		return
+	}
+}
+
 func (app *application) checkout(w http.ResponseWriter, r *http.Request) {
 	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
 

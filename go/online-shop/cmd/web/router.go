@@ -9,6 +9,7 @@ func (app *application) router() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Get("/", app.home)
+	mux.Get("/login", app.login)
 	mux.Get("/checkout", app.checkout)
 	mux.Post("/receipt", app.receipt)
 	mux.Get("/about", app.about)
