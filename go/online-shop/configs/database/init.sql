@@ -115,7 +115,7 @@ create table users
     first_name  varchar(63),
     last_name   varchar(63),
     email       varchar(127),
-    passwd      varchar(127),
+    password    varchar(127),
     create_time timestamp default current_timestamp,
     update_time timestamp default current_timestamp on update current_timestamp,
     primary key (id)
