@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"onlineshop/internal/model"
+	"time"
 )
 
 type loginRequest struct {
@@ -14,8 +15,8 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	Status string `json:"status"`
-	Token  string `json:"token"`
+	Status string      `json:"status"`
+	Token  model.Token `json:"token"`
 }
 
 func (app *application) login(w http.ResponseWriter, r *http.Request) {
@@ -61,8 +62,14 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 
 	response := loginResponse{
 		Status: "OK",
-		Token:  "Token",
 	}
+	response.Token, err = model.NewToken(1, "Default Scope", time.Hour*24)
+	if err != nil {
+		app.loggers.error.Println(err)
+		http.Error(w, "{}", http.StatusInternalServerError)
+		return
+	}
+
 	responseJSON, err := json.Marshal(response)
 	if err != nil {
 		app.loggers.error.Println(err)
@@ -80,7 +87,6 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 func invalidCredential(w http.ResponseWriter) error {
 	response := loginResponse{
 		Status: "Invalid Credential",
-		Token:  "",
 	}
 	responseJSON, err := json.Marshal(response)
 	if err != nil {
