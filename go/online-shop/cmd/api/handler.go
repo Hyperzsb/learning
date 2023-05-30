@@ -17,15 +17,15 @@ func (app *application) createPaymentIntent(w http.ResponseWriter, r *http.Reque
 		Amount   string `json:"amount"`
 	}
 
-	payload := paymentRequest{}
-	err := json.NewDecoder(r.Body).Decode(&payload)
+	request := paymentRequest{}
+	err := json.NewDecoder(r.Body).Decode(&request)
 	if err != nil {
 		app.loggers.error.Println(err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
-	amount, err := strconv.Atoi(payload.Amount)
+	amount, err := strconv.Atoi(request.Amount)
 	if err != nil {
 		app.loggers.error.Println(err)
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -34,15 +34,16 @@ func (app *application) createPaymentIntent(w http.ResponseWriter, r *http.Reque
 
 	p := payment.New(app.config.stripe.key, app.config.stripe.secret)
 
-	data, err := p.Charge(payload.Currency, amount)
+	data, err := p.Charge(request.Currency, amount)
 	if err != nil {
 		app.loggers.error.Println(err)
 		if chargeErr, ok := err.(*payment.ChargeError); ok {
 			http.Error(w, chargeErr.Error(), http.StatusForbidden)
 		} else {
 			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-			return
 		}
+
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -100,14 +101,13 @@ func (app *application) getProduct(w http.ResponseWriter, r *http.Request) {
 
 	product, err := app.model.GetProduct(id)
 	if err != nil {
+		app.loggers.error.Println(err)
 		if _, ok := err.(*model.EmptyQueryError); ok {
-			app.loggers.error.Println(err)
 			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-			return
+		} else {
+			http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		}
 
-		app.loggers.error.Println(err)
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
