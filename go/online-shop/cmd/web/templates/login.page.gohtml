@@ -21,7 +21,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="login-password" class="form-label">Password</label>
-                        <input type="text" name="login-password" id="login-password" class="form-control" required>
+                        <input type="password" name="login-password" id="login-password" class="form-control" required>
                     </div>
 
                     <div class="mb-3 py-3 text-center">
@@ -34,4 +34,33 @@
 {{end}}
 
 {{define "JavaScript"}}
+    <script>
+        document.getElementById('login-submit').addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const form = document.getElementById('login-form');
+            form.classList.add('was-validated');
+            if (form.checkValidity() === false) {
+                return;
+            }
+
+            const loginRequest = {
+                email: document.getElementById('login-email').value,
+                password: document.getElementById('login-password').value
+            };
+
+            fetch('http://{{.API}}/login', {
+                method: 'post',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(loginRequest)
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+            });
+        });
+    </script>
 {{end}}
