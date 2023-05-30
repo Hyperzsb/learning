@@ -120,3 +120,5 @@ create table users
     update_time timestamp default current_timestamp on update current_timestamp,
     primary key (id)
 );
+insert into users (first_name, last_name, email, password)
+values ('admin', 'root', 'admin@root.com', '$2a$10$FTrKW04AaYKsylmQkQCFoOQKeDaG723R6/5BLjW9aBTlog6RnzYMm');
