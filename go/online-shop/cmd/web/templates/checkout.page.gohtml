@@ -15,8 +15,8 @@
         <div class="row my-3">
             <div class="col-6 offset-3">
                 <form action="/receipt" method="post" name="payment-form" id="payment-form" class="needs-validation">
-                    <div id="payment-success" class="alert alert-success mb-3 d-none" role="alert"></div>
-                    <div id="payment-error" class="alert alert-danger mb-3 d-none" role="alert"></div>
+                    <div id="payment-success" class="alert alert-success mb-3 text-center d-none" role="alert"></div>
+                    <div id="payment-error" class="alert alert-danger mb-3 text-center d-none" role="alert"></div>
                     <div class="mb-3">
                         <label for="payment-amount" class="form-label">Amount</label>
                         <input type="text" name="payment-amount" id="payment-amount" class="form-control" required>
@@ -37,7 +37,7 @@
                         <div id="payment-card-error" class="alert alert-danger mt-3 d-none" role="alert"></div>
                     </div>
 
-                    <div class="mb-3 py-3 text-center">
+                    <div class="py-3 text-center">
                         <button type="submit" id="payment-submit" class="btn btn-primary w-25">Pay!</button>
                     </div>
 
