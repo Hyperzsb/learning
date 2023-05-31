@@ -40,4 +40,9 @@
 {{end}}
 
 {{define "JavaScript"}}
+    <script>
+        if (!hasLoggedIn()) {
+            location.replace('/');
+        }
+    </script>
 {{end}}

@@ -57,6 +57,11 @@
 {{end}}
 
 {{define "JavaScript"}}
+    <script>
+        if (!hasLoggedIn()) {
+            location.replace('/');
+        }
+    </script>
     <script src="https://js.stripe.com/v3"></script>
     <script>
         const stripe = Stripe('{{index .Data "StripeKey"}}');

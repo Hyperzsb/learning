@@ -81,7 +81,7 @@
         const logoutItem = document.getElementById('logout-item');
 
         document.addEventListener('DOMContentLoaded', function () {
-            if (localStorage.getItem('token_text') !== null) {
+            if (hasLoggedIn()) {
                 if (checkoutItem.classList.contains('d-none')) {
                     checkoutItem.classList.remove('d-none');
                 }
@@ -93,6 +93,13 @@
                 if (logoutItem.classList.contains('d-none')) {
                     logoutItem.classList.remove('d-none');
                 }
+            } else {
+                if (localStorage.getItem('token_text') !== null) {
+                    localStorage.removeItem('token_text');
+                }
+                if (localStorage.getItem('token_expiry') !== null) {
+                    localStorage.removeItem('token_expiry');
+                }
             }
         });
 
@@ -102,6 +109,18 @@
 
             location.replace('/');
         });
+    </script>
+    <script>
+        function hasLoggedIn() {
+            if (localStorage.getItem('token_text') === null || localStorage.getItem('token_expiry') === null ) {
+                return false
+            }
+
+            const expiry = new Date(localStorage.getItem('token_expiry'));
+            const now = new Date();
+
+            return expiry > now;
+        }
     </script>
     {{block "JavaScript" .}}{{end}}
     </body>

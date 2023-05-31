@@ -60,17 +60,22 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(loginRequest)
-            }).then(response => response.json()).then(data => {
-                console.log(data);
-                if (data === null || typeof data.token === 'undefined' || data.token === null || data.status === 'Invalid Credential') {
-                    displayLoginError();
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error();
+                }
+            }).then(data => {
+                if (data.status === 'Invalid Credential') {
+                    displayLoginError('Email or password is wrong, please try again');
                 } else {
                     localStorage.setItem("token_text", data.token.text);
                     localStorage.setItem("token_expiry", data.token.expiry);
 
                     for (let i = 0; i < 3; i++) {
                         setTimeout(function () {
-                            displayLoginSuccess('Login Succeeded, Redirecting to the Home page in ' + (3 - i) + ' seconds');
+                            displayLoginSuccess('Login succeeded, redirecting to the home page in ' + (3 - i) + ' seconds');
                         }, 1000 * i);
                     }
 
@@ -78,13 +83,15 @@
                         location.replace('/');
                     }, 3000);
                 }
+            }).catch(error => {
+                displayLoginError('There is something wrong with the server, please try again later');
             });
         });
     </script>
     <script>
         const loginStatus = document.getElementById('login-status');
 
-        function displayLoginSuccess(msg = 'Login Succeeded') {
+        function displayLoginSuccess(msg = 'Login succeeded') {
             if (loginStatus.classList.contains('alert-danger')) {
                 loginStatus.classList.remove('alert-danger');
             }
@@ -100,7 +107,7 @@
             }
         }
 
-        function displayLoginError(msg = 'Login Failed') {
+        function displayLoginError(msg = 'Login failed') {
             if (loginStatus.classList.contains('alert-success')) {
                 loginStatus.classList.remove('alert-success');
             }
