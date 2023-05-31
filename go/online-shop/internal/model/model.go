@@ -10,14 +10,18 @@ type Model struct {
 }
 
 func New(dsn string) (*Model, error) {
-	db, err := driver.NewDB(dsn)
-	if err != nil {
-		return nil, err
+	model := &Model{
+		db: nil,
 	}
 
-	return &Model{
-		db: db,
-	}, err
+	db, err := driver.NewDB(dsn)
+	if err != nil {
+		return model, err
+	}
+
+	model.db = db
+
+	return model, nil
 }
 
 func (m *Model) Close() error {
