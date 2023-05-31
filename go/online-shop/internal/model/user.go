@@ -49,7 +49,7 @@ func (m *Model) GetUser(id int) (User, error) {
 
 	statement := `
 		select id, first_name, last_name, email, password
-		from Users
+		from users
 		where id = ?
 	`
 	row := m.db.QueryRowContext(ctx, statement, id)
@@ -80,7 +80,7 @@ func (m *Model) GetUserByEmail(email string) (User, error) {
 	email = strings.ToLower(email)
 	statement := `
 		select id, first_name, last_name, email, password
-		from Users
+		from users
 		where email = ?
 	`
 	row := m.db.QueryRowContext(ctx, statement, email)

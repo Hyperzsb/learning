@@ -80,8 +80,8 @@
         const loginItem = document.getElementById('login-item');
         const logoutItem = document.getElementById('logout-item');
 
-        document.addEventListener('DOMContentLoaded', function () {
-            if (hasLoggedIn()) {
+        document.addEventListener('DOMContentLoaded', async function () {
+            if (await hasLoggedIn()) {
                 if (checkoutItem.classList.contains('d-none')) {
                     checkoutItem.classList.remove('d-none');
                 }
@@ -111,15 +111,40 @@
         });
     </script>
     <script>
-        function hasLoggedIn() {
-            if (localStorage.getItem('token_text') === null || localStorage.getItem('token_expiry') === null ) {
+        async function hasLoggedIn() {
+            if (localStorage.getItem('token_text') === null || localStorage.getItem('token_expiry') === null) {
                 return false
             }
 
             const expiry = new Date(localStorage.getItem('token_expiry'));
             const now = new Date();
 
-            return expiry > now;
+            if (expiry < now) {
+                return false;
+            }
+
+            const tokenText = localStorage.getItem('token_text');
+
+            return await fetch('http://{{.API}}/authenticate', {
+                method: 'post',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + tokenText,
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error();
+                }
+            }).then(data => {
+                console.log(data);
+                return true;
+            }).catch(error => {
+                return false;
+            });
         }
     </script>
     {{block "JavaScript" .}}{{end}}

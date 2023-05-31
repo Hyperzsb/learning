@@ -82,10 +82,7 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := loginResponse{
-		Status: "OK",
-	}
-	response.Token, err = model.NewToken(1, "Default Scope", time.Hour*24)
+	token, err := model.NewToken(user.ID, "Default Scope", time.Hour*24)
 	if err != nil {
 		app.loggers.error.Println(err)
 		err = loginInternalServerError(w)
@@ -96,6 +93,32 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = app.model.DeleteTokensByUserID(user.ID)
+	if err != nil {
+		app.loggers.error.Println(err)
+		err = loginInternalServerError(w)
+		if err != nil {
+			app.loggers.error.Println(err)
+		}
+
+		return
+	}
+
+	_, err = app.model.CreateToken(token)
+	if err != nil {
+		app.loggers.error.Println(err)
+		err = loginInternalServerError(w)
+		if err != nil {
+			app.loggers.error.Println(err)
+		}
+
+		return
+	}
+
+	response := loginResponse{
+		Status: "OK",
+		Token:  token,
+	}
 	responseJSON, err := json.Marshal(response)
 	if err != nil {
 		app.loggers.error.Println(err)

@@ -1,4 +1,5 @@
 -- Drop all tables in dependency order
+drop table if exists tokens;
 drop table if exists users;
 drop table if exists orders;
 drop table if exists order_statuses;
@@ -122,3 +123,18 @@ create table users
 );
 insert into users (first_name, last_name, email, password)
 values ('admin', 'root', 'admin@root.com', '$2a$10$FTrKW04AaYKsylmQkQCFoOQKeDaG723R6/5BLjW9aBTlog6RnzYMm');
+
+-- Tokens table
+-- drop table if exists tokens;
+create table tokens
+(
+    id          int auto_increment,
+    user_id     int,
+    scope       varchar(255),
+    hash        varbinary(255),
+    expiry      timestamp,
+    create_time timestamp default current_timestamp,
+    update_time timestamp default current_timestamp on update current_timestamp,
+    primary key (id),
+    foreign key (user_id) references users (id) on update cascade on delete cascade
+);
