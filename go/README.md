@@ -9,8 +9,10 @@
 
 *This table of contents is for this directory of this repo, not README itself. Anyway, this README is not too long.*
 
+- [**concurrency**](concurrency): Concurrency is natively support by Go using the `goroutine` and `go` primitive. To grasp the concepts of concurrency, I solve several classic concurrency and synchronization problems in Go.
 - [**gophercises**](gophercises): [Gophercises](https://gophercises.com/) is a wonderful online course providing essential side project ideas for learning Go.
 I followed this course and provided my solution to these projects.
+- [**online-shop**](online-shop): This is a great attempt to build a modern and robust Web application from scratch by following a great Udemy course.
 - [**testing**](testing): Testing is so important in Go that I need to learn concepts and methods to write and run tests against my codes.
 
 ## Learning Resources
