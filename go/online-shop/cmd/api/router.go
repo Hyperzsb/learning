@@ -29,6 +29,14 @@ func (app *application) router() http.Handler {
 		})
 	})
 
+	mux.Route("/admin", func(r chi.Router) {
+		r.Use(app.needAuthentication)
+
+		r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
+			_, _ = w.Write([]byte("Success"))
+		})
+	})
+
 	mux.Post("/payment", app.createPaymentIntent)
 
 	return mux
