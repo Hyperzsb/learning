@@ -4,6 +4,17 @@
     Receipt - {{index .Data "ID"}}
 {{end}}
 
+{{define "PreBodyJS"}}
+    <script>
+        (async function () {
+            if (!await hasLoggedIn()) {
+                alert('You need to log in first!');
+                location.replace('/');
+            }
+        })();
+    </script>
+{{end}}
+
 {{define "Content"}}
     <div class="container-fluid min-vh-100">
         <div class="row my-3">
@@ -39,10 +50,5 @@
     </div>
 {{end}}
 
-{{define "JavaScript"}}
-    <script>
-        if (!hasLoggedIn()) {
-            location.replace('/');
-        }
-    </script>
+{{define "PostBodyJS"}}
 {{end}}

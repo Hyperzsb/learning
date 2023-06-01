@@ -161,7 +161,8 @@ func (m *Model) DeleteTokensByUserID(userID int) (int, error) {
 }
 
 // GetUserByToken gets the corresponding user bonded with a specific.
-// The parameter text is the plaintext of this token.
+// The parameter text is the plaintext of this token. Note that if
+// the token has expired, no user will be returned.
 func (m *Model) GetUserByToken(text string) (User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
@@ -174,7 +175,7 @@ func (m *Model) GetUserByToken(text string) (User, error) {
 		inner join (
 		    select user_id
 		    from tokens
-		    where hash = ?
+		    where hash = ? and expiry > current_timestamp
 		) as user_token
 		on users.id = user_token.user_id
 	`

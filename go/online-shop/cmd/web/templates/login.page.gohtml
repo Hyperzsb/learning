@@ -4,6 +4,9 @@
     Login
 {{end}}
 
+{{define "PreBodyJS"}}
+{{end}}
+
 {{define "Content"}}
     <div class="container-fluid min-vh-100">
         <div class="row my-3">
@@ -35,7 +38,7 @@
     </div>
 {{end}}
 
-{{define "JavaScript"}}
+{{define "PostBodyJS"}}
     <script>
         document.getElementById('login-submit').addEventListener('click', function (event) {
             event.preventDefault();

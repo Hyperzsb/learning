@@ -10,6 +10,43 @@
               integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
               crossorigin="anonymous">
         {{block "CSS" .}}{{end}}
+        <script>
+            async function hasLoggedIn() {
+                if (localStorage.getItem('token_text') === null || localStorage.getItem('token_expiry') === null) {
+                    return false
+                }
+
+                const expiry = new Date(localStorage.getItem('token_expiry'));
+                const now = new Date();
+
+                if (expiry < now) {
+                    return false;
+                }
+
+                const tokenText = localStorage.getItem('token_text');
+
+                return await fetch('http://{{.API}}/authenticate', {
+                    method: 'post',
+                    mode: 'cors',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ' + tokenText,
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error();
+                    }
+                }).then(data => {
+                    return true;
+                }).catch(error => {
+                    return false;
+                });
+            }
+        </script>
+        {{block "PreBodyJS" .}}{{end}}
     </head>
     <body>
     <header>
@@ -110,44 +147,7 @@
             location.replace('/');
         });
     </script>
-    <script>
-        async function hasLoggedIn() {
-            if (localStorage.getItem('token_text') === null || localStorage.getItem('token_expiry') === null) {
-                return false
-            }
-
-            const expiry = new Date(localStorage.getItem('token_expiry'));
-            const now = new Date();
-
-            if (expiry < now) {
-                return false;
-            }
-
-            const tokenText = localStorage.getItem('token_text');
-
-            return await fetch('http://{{.API}}/authenticate', {
-                method: 'post',
-                mode: 'cors',
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': 'Bearer ' + tokenText,
-                    'Content-Type': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error();
-                }
-            }).then(data => {
-                console.log(data);
-                return true;
-            }).catch(error => {
-                return false;
-            });
-        }
-    </script>
-    {{block "JavaScript" .}}{{end}}
+    {{block "PostBodyJS" .}}{{end}}
     </body>
     </html>
 {{end}}
