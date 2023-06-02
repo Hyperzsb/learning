@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/alexedwards/scs/mysqlstore"
+	"github.com/alexedwards/scs/v2"
 	"log"
 	"net/http"
 	"onlineshop/internal/model"
@@ -35,7 +37,8 @@ type application struct {
 		debug *log.Logger
 		error *log.Logger
 	}
-	model *model.Model
+	model   *model.Model
+	session *scs.SessionManager
 }
 
 func (app *application) serve() error {
@@ -44,6 +47,10 @@ func (app *application) serve() error {
 	if err != nil {
 		return err
 	}
+
+	app.session = scs.New()
+	app.session.Lifetime = time.Hour * 24
+	app.session.Store = mysqlstore.New(app.model.DB())
 
 	server := &http.Server{
 		Addr:              fmt.Sprintf("%s:%d", app.config.host, app.config.port),

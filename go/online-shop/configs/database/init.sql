@@ -1,4 +1,5 @@
 -- Drop all tables in dependency order
+drop table if exists sessions;
 drop table if exists tokens;
 drop table if exists users;
 drop table if exists orders;
@@ -138,3 +139,13 @@ create table tokens
     primary key (id),
     foreign key (user_id) references users (id) on update cascade on delete cascade
 );
+
+-- Sessions table
+-- drop table if exists sessions;
+create table sessions
+(
+    token  char(43) primary key,
+    data   blob         not null,
+    expiry timestamp(6) not null
+);
+create index sessions_expiry_idx on sessions (expiry);

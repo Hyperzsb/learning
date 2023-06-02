@@ -2,6 +2,10 @@ package main
 
 import "net/http"
 
+func (app *application) needSession(next http.Handler) http.Handler {
+	return app.session.LoadAndSave(next)
+}
+
 // needAuthentication is a middleware that checks the authentication status
 // of incoming requests. If requests are sent without an Authorization header
 // or the token inside the header is not valid, it will return an error

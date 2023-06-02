@@ -17,6 +17,8 @@ func (app *application) router() http.Handler {
 		MaxAge:           300,
 	}))
 
+	mux.Use(app.needSession)
+
 	mux.Post("/login", app.login)
 	mux.Post("/authenticate", app.authenticate)
 
@@ -29,6 +31,8 @@ func (app *application) router() http.Handler {
 		})
 	})
 
+	mux.Post("/payment", app.createPaymentIntent)
+
 	mux.Route("/admin", func(r chi.Router) {
 		r.Use(app.needAuthentication)
 
@@ -37,7 +41,34 @@ func (app *application) router() http.Handler {
 		})
 	})
 
-	mux.Post("/payment", app.createPaymentIntent)
+	mux.Route("/test", func(r chi.Router) {
+		r.Route("/session", func(r chi.Router) {
+			r.Post("/", func(w http.ResponseWriter, r *http.Request) {
+				err := r.ParseForm()
+				if err != nil {
+					_, _ = w.Write([]byte("Post Failed"))
+				}
+
+				data := r.Form.Get("data")
+				app.session.Put(r.Context(), "data", data)
+				_, _ = w.Write([]byte("Post Succeeded: " + data))
+			})
+
+			r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+				data := app.session.GetString(r.Context(), "data")
+				_, _ = w.Write([]byte("Get Succeeded: " + data))
+			})
+
+			r.Delete("/", func(w http.ResponseWriter, r *http.Request) {
+				err := app.session.Destroy(r.Context())
+				if err != nil {
+					_, _ = w.Write([]byte("Delete Failed"))
+				}
+
+				_, _ = w.Write([]byte("Delete Succeeded"))
+			})
+		})
+	})
 
 	return mux
 }

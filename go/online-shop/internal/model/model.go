@@ -24,6 +24,10 @@ func New(dsn string) (*Model, error) {
 	return model, nil
 }
 
+func (m *Model) DB() *sql.DB {
+	return m.db
+}
+
 func (m *Model) Close() error {
 	if m.db == nil {
 		return nil
