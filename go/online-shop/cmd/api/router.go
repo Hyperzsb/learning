@@ -17,10 +17,10 @@ func (app *application) router() http.Handler {
 		MaxAge:           300,
 	}))
 
-	mux.Use(app.needSession)
+	mux.Use(app.needsSession)
 
-	mux.Post("/login", app.login)
 	mux.Post("/authenticate", app.authenticate)
+	mux.Post("/authorize", app.authorize)
 
 	mux.Route("/product", func(r chi.Router) {
 		r.Post("/", app.createProduct)
@@ -34,13 +34,14 @@ func (app *application) router() http.Handler {
 	mux.Post("/payment", app.createPaymentIntent)
 
 	mux.Route("/admin", func(r chi.Router) {
-		r.Use(app.needAuthentication)
+		r.Use(app.needsAuthorization)
 
 		r.Get("/test", func(w http.ResponseWriter, r *http.Request) {
 			_, _ = w.Write([]byte("Success"))
 		})
 	})
 
+	// This group of routes is used for testing purposes only.
 	mux.Route("/test", func(r chi.Router) {
 		r.Route("/session", func(r chi.Router) {
 			r.Post("/", func(w http.ResponseWriter, r *http.Request) {

@@ -25,7 +25,7 @@
 
                 const tokenText = localStorage.getItem('token_text');
 
-                return await fetch('http://{{.API}}/authenticate', {
+                return await fetch('http://{{.API}}/authorize', {
                     method: 'post',
                     mode: 'cors',
                     headers: {
@@ -34,7 +34,7 @@
                         'Content-Type': 'application/json'
                     }
                 }).then(response => {
-                    if (response.ok) {
+                    if (response.status === 200) {
                         return response.json();
                     } else {
                         throw new Error();
