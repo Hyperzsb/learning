@@ -46,7 +46,9 @@ stop_web:
 # start_api: start the API server
 start_api: stop_api build_api
 	@echo "-> Starting the api server..."
-	@env API_DSN="${API_DSN}" STRIPE_KEY="${STRIPE_KEY}" STRIPE_SECRET="${STRIPE_SECRET}" .build/api -port=${API_PORT} &
+	@env API_DSN="${API_DSN}" STRIPE_KEY="${STRIPE_KEY}" STRIPE_SECRET="${STRIPE_SECRET}" \
+		MAILTRAP_SMTP_HOST="${MAILTRAP_SMTP_HOST}" MAILTRAP_SMTP_PORT="${MAILTRAP_SMTP_PORT}" MAILTRAP_SMTP_USERNAME="${MAILTRAP_SMTP_USERNAME}" MAILTRAP_SMTP_PASSWORD="${MAILTRAP_SMTP_PASSWORD}"\
+ 		.build/api -port=${API_PORT} &
 	@echo "-> The API server is running"
 
 # stop_api: stop the API server
@@ -67,9 +69,3 @@ stop_db:
 	@-docker stop ${MYSQL_NAME}
 	@-docker rm ${MYSQL_NAME}
 	@echo "-> The MySQL database has been stopped"
-
-start_api_db: start_db start_api
-	@echo "-> The MySQL database and API server are running"
-
-stop_api_db: stop_db stop_api
-	@echo "-> The MySQL database and API server have been stopped"

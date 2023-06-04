@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"onlineshop/internal/model"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -26,6 +27,14 @@ type configuration struct {
 	stripe struct {
 		key    string
 		secret string
+	}
+	mailtrap struct {
+		smtp struct {
+			host     string
+			port     int
+			username string
+			password string
+		}
 	}
 }
 
@@ -74,9 +83,16 @@ func main() {
 	flag.StringVar(&config.env, "environment", "dev", "serving mode")
 	flag.Parse()
 
+	// Inject the Stripe config via environment variables
 	config.db.dsn = os.Getenv("API_DSN")
 	config.stripe.key = os.Getenv("STRIPE_KEY")
 	config.stripe.secret = os.Getenv("STRIPE_SECRET")
+
+	// Inject the Mailtrap config via environment variables
+	config.mailtrap.smtp.host = os.Getenv("MAILTRAP_SMTP_HOST")
+	config.mailtrap.smtp.port, _ = strconv.Atoi(os.Getenv("MAILTRAP_SMTP_PORT"))
+	config.mailtrap.smtp.username = os.Getenv("MAILTRAP_SMTP_USERNAME")
+	config.mailtrap.smtp.password = os.Getenv("MAILTRAP_SMTP_PASSWORD")
 
 	app := &application{
 		version: version,
