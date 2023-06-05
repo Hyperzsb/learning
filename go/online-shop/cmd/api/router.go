@@ -23,6 +23,8 @@ func (app *application) router() http.Handler {
 	mux.Post("/deauthenticate", app.deauthenticate)
 	mux.Post("/authorize", app.authorize)
 
+	mux.Post("/reset", app.reset)
+
 	mux.Route("/product", func(r chi.Router) {
 		r.Post("/", app.createProduct)
 		r.Route("/{id}", func(r chi.Router) {

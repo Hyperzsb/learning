@@ -31,6 +31,12 @@
                     <div class="py-3 text-center">
                         <button type="submit" id="reset-submit" class="btn btn-primary px-3">Send Reset Email</button>
                     </div>
+
+                    <div id="reset-spinner" class="mb-3 text-center d-none">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -49,11 +55,63 @@
                 return;
             }
 
-            displayResetSuccess();
+            hideResetSubmit();
+
+            const resetRequest = {
+                email: document.getElementById('reset-email').value
+            };
+
+            fetch('http://{{.API}}/reset', {
+                method: 'post',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(resetRequest)
+            }).then(response => {
+                if (response.status === 200 || response.status === 400) {
+                    return response.json();
+                } else {
+                    return new Error();
+                }
+            }).then(data => {
+                if (data.status === 'Bad Request') {
+                    displayResetError('Your email is not valid. Please check it and try again.');
+                } else {
+                    displayResetSuccess();
+                }
+            }).catch(error => {
+                displayResetError('Unexpected errors occurred.');
+            }).finally(() => {
+                showResetSubmit();
+            });
         });
     </script>
     <script>
         const resetStatus = document.getElementById('reset-status');
+        const resetSubmit = document.getElementById('reset-submit');
+        const resetSpinner = document.getElementById('reset-spinner');
+
+        function hideResetSubmit() {
+            if (!resetSubmit.classList.contains('d-none')) {
+                resetSubmit.classList.add('d-none');
+            }
+
+            if (resetSpinner.classList.contains('d-none')) {
+                resetSpinner.classList.remove('d-none');
+            }
+        }
+
+        function showResetSubmit() {
+            if (resetSubmit.classList.contains('d-none')) {
+                resetSubmit.classList.remove('d-none');
+            }
+
+            if (!resetSpinner.classList.contains('d-none')) {
+                resetSpinner.classList.add('d-none');
+            }
+        }
 
         function displayResetSuccess(msg = 'Reset email sent') {
             if (resetStatus.classList.contains('alert-danger')) {
