@@ -74,8 +74,8 @@
                 if (data.status === 'Invalid Credential') {
                     displayLoginError('Email or password is wrong, please try again.');
                 } else {
-                    localStorage.setItem("token_text", data.data.token.text);
-                    localStorage.setItem("token_expiry", data.data.token.expiry);
+                    localStorage.setItem("token_text", data.data.text);
+                    localStorage.setItem("token_expiry", data.data.expiry);
 
                     for (let i = 0; i < 3; i++) {
                         setTimeout(function () {

@@ -1,6 +1,9 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"onlineshop/cmd/api/jsonio"
+)
 
 func (app *application) needsSession(next http.Handler) http.Handler {
 	return app.session.LoadAndSave(next)
@@ -15,10 +18,10 @@ func (app *application) needsAuthorization(next http.Handler) http.Handler {
 		_, err := app.validateToken(r)
 		if err != nil {
 			app.loggers.error.Println(err)
-			err = writeJSON(w, authorizeResponse{
-				code:    http.StatusForbidden,
-				status:  "Invalid Token",
-				message: "No valid token is provided. Please login first.",
+			err = jsonio.Write(w, jsonio.Response{
+				Code:    http.StatusForbidden,
+				Status:  "Invalid Token",
+				Message: "No valid token is provided. Please login first.",
 			})
 			if err != nil {
 				app.loggers.error.Println(err)
