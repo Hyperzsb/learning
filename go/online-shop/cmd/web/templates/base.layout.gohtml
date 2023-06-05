@@ -141,10 +141,35 @@
         });
 
         logoutItem.addEventListener('click', function () {
-            localStorage.removeItem('token_text');
-            localStorage.removeItem('token_expiry');
+            const tokenText = localStorage.getItem('token_text');
 
-            location.replace('/');
+            fetch('http://{{.API}}/deauthenticate', {
+                method: 'post',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + tokenText,
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                if (response.status === 200 || response.status === 400) {
+                    return response.json();
+                } else {
+                    throw new Error();
+                }
+            }).then(data => {
+                if (data.status === 'Invalid Token') {
+                    alert("Logout failed: " + data.message);
+                } else {
+                    alert("You have logged out.");
+                }
+            }).catch(error => {
+                alert("Logout failed: Unexpected errors occurred");
+            }).finally(() => {
+                localStorage.removeItem('token_text');
+                localStorage.removeItem('token_expiry');
+                location.replace('/');
+            });
         });
     </script>
     {{block "PostBodyJS" .}}{{end}}

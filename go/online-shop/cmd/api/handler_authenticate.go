@@ -3,10 +3,12 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"onlineshop/cmd/api/jsonio"
 	"onlineshop/internal/model"
+	"strings"
 	"time"
 )
 
@@ -146,4 +148,59 @@ func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		app.loggers.error.Println(err)
 	}
+}
+
+func (app *application) deauthenticate(w http.ResponseWriter, r *http.Request) {
+	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
+
+	err := app.invalidateToken(r)
+	if err != nil {
+		app.loggers.error.Println(err)
+		err = jsonio.Write(w, jsonio.Response{
+			Code:    http.StatusBadRequest,
+			Status:  "Invalid Token",
+			Message: fmt.Sprintf("Token check failed (%s).", err.Error()),
+		})
+		if err != nil {
+			app.loggers.error.Println(err)
+		}
+
+		return
+	}
+
+	err = jsonio.Write(w, jsonio.Response{
+		Code:    http.StatusOK,
+		Status:  "Deauthenticated",
+		Message: "You have been deauthenticated.",
+	})
+	if err != nil {
+		app.loggers.error.Println(err)
+		return
+	}
+}
+
+func (app *application) invalidateToken(r *http.Request) error {
+	authorizationHeader := r.Header.Get("Authorization")
+	if len(authorizationHeader) == 0 {
+		return errors.New("no authorization header provided")
+	}
+
+	authorizationParts := strings.Split(authorizationHeader, " ")
+
+	if len(authorizationParts) != 2 ||
+		authorizationParts[0] != "Bearer" {
+		return errors.New("invalid authorization header, not using Bearer scheme")
+	}
+
+	_, err := app.model.ExpireToken(authorizationParts[1])
+	if err != nil {
+		app.loggers.error.Println(err)
+		if _, ok := err.(*model.EmptyQueryError); ok {
+			return errors.New("invalid or expired authorization token")
+		}
+
+		return errors.New("internal server error")
+	}
+
+	return nil
 }

@@ -20,6 +20,7 @@ func (app *application) router() http.Handler {
 	mux.Use(app.needsSession)
 
 	mux.Post("/authenticate", app.authenticate)
+	mux.Post("/deauthenticate", app.deauthenticate)
 	mux.Post("/authorize", app.authorize)
 
 	mux.Route("/product", func(r chi.Router) {

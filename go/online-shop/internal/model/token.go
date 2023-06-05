@@ -200,3 +200,52 @@ func (m *Model) GetUserByToken(text string) (User, error) {
 
 	return user, nil
 }
+
+func (m *Model) ExpireToken(text string) (int, error) {
+	ctxR, cancelR := context.WithTimeout(context.Background(), time.Second)
+	defer cancelR()
+
+	hash := sha256.Sum256([]byte(text))
+
+	statementR := `
+		select user_id, scope, expiry
+		from tokens
+		where hash = ? and expiry > ?
+	`
+	row := m.db.QueryRowContext(ctxR, statementR, hash[:], time.Now())
+
+	token := Token{}
+	err := row.Scan(
+		&token.UserID,
+		&token.Scope,
+		&token.Expiry,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return -1, &EmptyQueryError{err.Error()}
+		}
+
+		return -1, err
+	}
+
+	ctxU, cancelU := context.WithTimeout(context.Background(), time.Second)
+	defer cancelU()
+
+	statementU := `
+		update tokens
+		set expiry = ?
+		where hash = ?
+	`
+	result, err := m.db.ExecContext(ctxU, statementU, time.Now(), hash[:])
+	if err != nil {
+		return -1, err
+	}
+
+	cnt, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(cnt), nil
+}
