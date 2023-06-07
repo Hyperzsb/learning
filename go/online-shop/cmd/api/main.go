@@ -24,6 +24,7 @@ type configuration struct {
 	host   string
 	port   int
 	env    string
+	web    string
 	crypto struct {
 		rsa struct {
 			pk *rsa.PublicKey
@@ -51,6 +52,7 @@ func (cfg *configuration) init() error {
 	flag.StringVar(&cfg.host, "host", "127.0.0.1", "host to listen on")
 	flag.IntVar(&cfg.port, "port", 8000, "port to listen on")
 	flag.StringVar(&cfg.env, "environment", "dev", "serving mode")
+	flag.StringVar(&cfg.web, "web", "127.0.0.1:8080", "url to web")
 	flag.Parse()
 
 	// Inject the Stripe config via environment variables
@@ -124,6 +126,7 @@ type application struct {
 }
 
 func (app *application) serve() error {
+	app.loggers.info.Println("Connecting to the database...")
 	var err error
 	app.model, err = model.New(app.config.db.dsn)
 	if err != nil {
@@ -165,10 +168,12 @@ func main() {
 		},
 	}
 
+	app.loggers.info.Println("Initializing the configuration...")
 	if err := config.init(); err != nil {
 		app.loggers.error.Fatal(err)
 	}
 
+	app.loggers.info.Println("Starting the server...")
 	if err := app.serve(); err != nil {
 		_ = app.model.Close()
 		app.loggers.error.Fatal(err)

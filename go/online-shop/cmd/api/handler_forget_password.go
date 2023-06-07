@@ -9,13 +9,16 @@ import (
 	"html/template"
 	"net/http"
 	"onlineshop/cmd/api/jsonio"
+	"onlineshop/internal/signer"
 	"time"
 )
 
 //go:embed templates
 var templateFS embed.FS
 
-func (app *application) reset(w http.ResponseWriter, r *http.Request) {
+func (app *application) forgetPassword(w http.ResponseWriter, r *http.Request) {
+	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
+
 	type resetRequest struct {
 		Email string `json:"email"`
 	}
@@ -36,11 +39,45 @@ func (app *application) reset(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = app.model.GetUserByEmail(request.Email)
+	if err != nil {
+		app.loggers.error.Println(err)
+		err = jsonio.Write(w, jsonio.Response{
+			Code:    http.StatusBadRequest,
+			Status:  "Bad Request",
+			Message: "Your email is invalid or not existing. Please try again.",
+		})
+		if err != nil {
+			app.loggers.error.Println(err)
+		}
+
+		return
+	}
+
+	rawLink := fmt.Sprintf("http://%s/reset-password?email=%s", app.config.web, request.Email)
+
+	rsaSigner := signer.NewRSASigner(app.config.crypto.rsa.pk, app.config.crypto.rsa.sk)
+	signature, err := rsaSigner.Sign(rawLink)
+	if err != nil {
+		app.loggers.error.Println(err)
+		app.loggers.error.Println(err)
+		err = jsonio.Write(w, jsonio.Response{
+			Code:    http.StatusInternalServerError,
+			Status:  "Interval Server Error",
+			Message: "Unexpected errors occurred. Please try again later.",
+		})
+		if err != nil {
+			app.loggers.error.Println(err)
+		}
+
+		return
+	}
+
 	body := struct {
 		Link string
-	}{"https://google.com"}
+	}{fmt.Sprintf("%s&hash=%s", rawLink, signature)}
 
-	err = app.sendMail("from@onlineshop.com", "to@onlineshop.com", "Reset Password", "reset", body)
+	err = app.sendMail("from@onlineshop.com", "to@onlineshop.com", "Reset Password", "forget-password", body)
 	if err != nil {
 		app.loggers.error.Println(err)
 		app.loggers.error.Println(err)
@@ -59,7 +96,7 @@ func (app *application) reset(w http.ResponseWriter, r *http.Request) {
 	err = jsonio.Write(w, jsonio.Response{
 		Code:    http.StatusOK,
 		Status:  "Reset Email Sent",
-		Message: "The reset email has been sent. Please check your inbox",
+		Message: "The forgetPassword email has been sent. Please check your inbox",
 	})
 	if err != nil {
 		app.loggers.error.Println(err)
