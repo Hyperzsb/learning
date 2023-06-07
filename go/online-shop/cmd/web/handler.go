@@ -22,11 +22,11 @@ func (app *application) login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// reset handles the password reset request and renders the corresponding page.
-func (app *application) reset(w http.ResponseWriter, r *http.Request) {
+// forgetPassword handles the forget password request and renders the corresponding page.
+func (app *application) forgetPassword(w http.ResponseWriter, r *http.Request) {
 	app.loggers.info.Printf("%s -> %s\n", r.Method, r.URL)
 
-	if err := app.render(w, r, "reset", nil); err != nil {
+	if err := app.render(w, r, "forget-password", nil); err != nil {
 		app.loggers.error.Println(err)
 		return
 	}

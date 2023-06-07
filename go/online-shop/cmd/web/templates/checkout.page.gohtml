@@ -26,8 +26,7 @@
         <div class="row my-3">
             <div class="col-6 offset-3">
                 <form action="/receipt" method="post" name="payment-form" id="payment-form" class="needs-validation">
-                    <div id="payment-success" class="alert alert-success mb-3 text-center d-none" role="alert"></div>
-                    <div id="payment-error" class="alert alert-danger mb-3 text-center d-none" role="alert"></div>
+                    <div id="payment-status" class="alert alert-success mb-3 text-center d-none" role="alert"></div>
                     <div class="mb-3">
                         <label for="payment-amount" class="form-label">Amount</label>
                         <input type="text" name="payment-amount" id="payment-amount" class="form-control" required>
@@ -109,7 +108,7 @@
                 return;
             }
 
-            hidePaymentSubmit();
+            hideSubmit('payment-submit', 'payment-spinner');
 
             // Send request to the backend to get the payment intent
             const data = {
@@ -134,18 +133,18 @@
                     }
                 }).then(response => {
                     if (response.error) {
-                        displayPaymentError(response.error.message);
-                        showPaymentSubmit();
+                        displayError('payment-status', response.error.message);
+                        showSubmit('payment-submit', 'payment-spinner');
                         return;
                     }
 
                     if (response.paymentIntent == null || response.paymentIntent.status !== "succeeded") {
-                        displayPaymentError(response.error.message);
-                        showPaymentSubmit();
+                        displayError('payment-status', response.error.message);
+                        showSubmit('payment-submit', 'payment-spinner');
                         return;
                     }
 
-                    displayPaymentSuccess();
+                    displaySuccess('payment-status', 'Payment succeeded!');
 
                     document.getElementById("payment-id").value = response.paymentIntent.id;
                     document.getElementById("payment-method").value = response.paymentIntent.payment_method_types[0];
@@ -153,54 +152,10 @@
 
                     document.getElementById("payment-form").submit();
                 }).catch(error => {
-                    displayPaymentError('Invalid response from payment gateway');
-                    showPaymentSubmit();
+                    displayError('payment-status', 'Invalid response from payment gateway');
+                    showSubmit('payment-submit', 'payment-spinner');
                 })
             });
         });
-    </script>
-    <script>
-        const paymentSubmit = document.getElementById('payment-submit');
-        const paymentSpinner = document.getElementById('payment-spinner');
-        const paymentSuccess = document.getElementById('payment-success');
-        const paymentError = document.getElementById('payment-error');
-
-        function showPaymentSubmit() {
-            if (paymentSubmit.classList.contains('d-none')) {
-                paymentSubmit.classList.remove('d-none');
-            }
-            if (!paymentSpinner.classList.contains('d-none')) {
-                paymentSpinner.classList.add('d-none');
-            }
-        }
-
-        function hidePaymentSubmit() {
-            if (!paymentSubmit.classList.contains('d-none')) {
-                paymentSubmit.classList.add('d-none');
-            }
-            if (paymentSpinner.classList.contains('d-none')) {
-                paymentSpinner.classList.remove('d-none');
-            }
-        }
-
-        function displayPaymentSuccess(msg = 'Payment succeeded') {
-            if (!paymentError.classList.contains('d-none')) {
-                paymentError.classList.add('d-none');
-            }
-            paymentSuccess.innerText = msg;
-            if (paymentSuccess.classList.contains('d-none')) {
-                paymentSuccess.classList.remove('d-none');
-            }
-        }
-
-        function displayPaymentError(msg = 'Payment failed') {
-            if (!paymentSuccess.classList.contains('d-none')) {
-                paymentSuccess.classList.add('d-none');
-            }
-            paymentError.innerText = msg;
-            if (paymentError.classList.contains('d-none')) {
-                paymentError.classList.remove('d-none');
-            }
-        }
     </script>
 {{end}}

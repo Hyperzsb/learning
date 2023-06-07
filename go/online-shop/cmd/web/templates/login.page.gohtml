@@ -31,7 +31,7 @@
 
                     <div class="py-3 text-center">
                         <button type="submit" id="login-submit" class="btn btn-primary px-3">Log In</button>
-                        <a href="/reset" class="d-block mt-3">Forget Your Password?</a>
+                        <a href="/forget-password" class="d-block mt-3">Forget Your Password?</a>
                     </div>
                 </form>
             </div>
@@ -72,14 +72,14 @@
                 }
             }).then(data => {
                 if (data.status === 'Invalid Credential') {
-                    displayLoginError('Email or password is wrong, please try again.');
+                    displayError('login-status', 'Email or password is wrong, please try again.');
                 } else {
                     localStorage.setItem("token_text", data.data.text);
                     localStorage.setItem("token_expiry", data.data.expiry);
 
                     for (let i = 0; i < 3; i++) {
                         setTimeout(function () {
-                            displayLoginSuccess('Login succeeded, redirecting to the home page in ' + (3 - i) + ' seconds...');
+                            displaySuccess('login-status', 'Login succeeded, redirecting to the home page in ' + (3 - i) + ' seconds...');
                         }, 1000 * i);
                     }
 
@@ -88,43 +88,8 @@
                     }, 3000);
                 }
             }).catch(error => {
-                displayLoginError('Something goes wrong :(. Please try again later.');
+                displayError('login-status', 'Something goes wrong :(. Please try again later.');
             });
         });
-    </script>
-    <script>
-        const loginStatus = document.getElementById('login-status');
-
-        function displayLoginSuccess(msg = 'Login succeeded') {
-            if (loginStatus.classList.contains('alert-danger')) {
-                loginStatus.classList.remove('alert-danger');
-            }
-
-            if (!loginStatus.classList.contains('alert-success')) {
-                loginStatus.classList.add('alert-success');
-            }
-
-            loginStatus.innerText = msg;
-
-            if (loginStatus.classList.contains('d-none')) {
-                loginStatus.classList.remove('d-none');
-            }
-        }
-
-        function displayLoginError(msg = 'Login failed') {
-            if (loginStatus.classList.contains('alert-success')) {
-                loginStatus.classList.remove('alert-success');
-            }
-
-            if (!loginStatus.classList.contains('alert-danger')) {
-                loginStatus.classList.add('alert-danger');
-            }
-
-            loginStatus.innerText = msg;
-
-            if (loginStatus.classList.contains('d-none')) {
-                loginStatus.classList.remove('d-none');
-            }
-        }
     </script>
 {{end}}

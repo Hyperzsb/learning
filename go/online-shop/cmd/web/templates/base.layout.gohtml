@@ -172,6 +172,65 @@
             });
         });
     </script>
+    <script>
+        function showSubmit(submitID, spinnerID) {
+            const submit = document.getElementById(submitID);
+            const spinner = document.getElementById(spinnerID);
+
+            if (submit.classList.contains('d-none')) {
+                submit.classList.remove('d-none');
+            }
+            if (!spinner.classList.contains('d-none')) {
+                spinner.classList.add('d-none');
+            }
+        }
+
+        function hideSubmit(submitID, spinnerID) {
+            const submit = document.getElementById(submitID);
+            const spinner = document.getElementById(spinnerID);
+
+            if (!submit.classList.contains('d-none')) {
+                submit.classList.add('d-none');
+            }
+            if (spinner.classList.contains('d-none')) {
+                spinner.classList.remove('d-none');
+            }
+        }
+
+        function displaySuccess(elementID, msg = 'Succeeded') {
+            const status = document.getElementById(elementID);
+            if (status.classList.contains('alert-danger')) {
+                status.classList.remove('alert-danger');
+            }
+
+            if (!status.classList.contains('alert-success')) {
+                status.classList.add('alert-success');
+            }
+
+            status.innerText = msg;
+
+            if (status.classList.contains('d-none')) {
+                status.classList.remove('d-none');
+            }
+        }
+
+        function displayError(elementID, msg = 'Failed') {
+            const status = document.getElementById(elementID);
+            if (status.classList.contains('alert-success')) {
+                status.classList.remove('alert-success');
+            }
+
+            if (!status.classList.contains('alert-danger')) {
+                status.classList.add('alert-danger');
+            }
+
+            status.innerText = msg;
+
+            if (status.classList.contains('d-none')) {
+                status.classList.remove('d-none');
+            }
+        }
+    </script>
     {{block "PostBodyJS" .}}{{end}}
     </body>
     </html>

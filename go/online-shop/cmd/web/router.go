@@ -11,7 +11,7 @@ func (app *application) router() http.Handler {
 	mux.Get("/", app.home)
 
 	mux.Get("/login", app.login)
-	mux.Get("/reset", app.reset)
+	mux.Get("/forget-password", app.forgetPassword)
 
 	mux.Get("/checkout", app.checkout)
 	mux.Post("/receipt", app.receipt)
