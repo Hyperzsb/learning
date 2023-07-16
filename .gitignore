@@ -1,3 +1,7 @@
+### Custom ###
+.idea
+!.gitkeep
+
 # Created by https://www.toptal.com/developers/gitignore/api/macos,vim,jetbrains+all,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,vim,jetbrains+all,visualstudiocode
 
